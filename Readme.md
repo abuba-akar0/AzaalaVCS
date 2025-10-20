@@ -32,8 +32,7 @@ Azaala_VCS/
 ├── data/                      # Repository data storage
 │   ├── commits/               # Stores commit data
 │   └── index/                 # Staging area and HEAD reference
-├── docs/                      # Documentation
-└── tests/                     # Test files
+└── docs/                      # Documentation
 ```
 
 ## Example Usage
