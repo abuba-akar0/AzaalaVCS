@@ -398,7 +398,7 @@ public class VCS {
                 for (String file : commit.getChangedFiles()) {
                     logEntries.add("  - " + file);
                 }
-                logEntries.add("");
+                logEntries.add("----------------------------");
             }
 
         } catch (Exception e) {

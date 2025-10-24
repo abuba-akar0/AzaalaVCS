@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ArtifactsWorkspaceSettings">
+    <artifacts-to-build>
+      <artifact name="Azaala_VCS:jar" />
+    </artifacts-to-build>
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ac154c83-14e1-4596-91cd-4bfd8ef51ebe" name="Changes" comment="add project configuration files for IntelliJ IDEA">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="ac154c83-14e1-4596-91cd-4bfd8ef51ebe" name="Changes" comment="update .gitignore to include .idea directory and modify workspace.xml for IntelliJ IDEA configuration">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/SummaryGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/azaala/vcs/SummaryGenerator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/VCS.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/azaala/vcs/VCS.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -15,18 +22,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "abuba-akar0"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;abuba-akar0&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/abuba-akar0/AzaalaVCS.git",
-    "accountId": "46e03025-46a6-4d68-983d-b4d863f92b02"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/abuba-akar0/AzaalaVCS.git&quot;,
+    &quot;accountId&quot;: &quot;46e03025-46a6-4d68-983d-b4d863f92b02&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
 }</component>
@@ -35,41 +42,42 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Run",
-    "JUnit.DiffUtilTest.executor": "Run",
-    "JUnit.DiffUtilTest.testGetAddedLines.executor": "Run",
-    "JUnit.DiffUtilTest.testGetRemovedLines.executor": "Run",
-    "JUnit.DiffUtilTest.testGetUnifiedDiff.executor": "Run",
-    "JUnit.RepositoryTest.testLoadCommit.executor": "Run",
-    "JUnit.RepositoryTest.testSaveSnapshot.executor": "Run",
-    "JUnit.RepositoryTest.testUpdateHeadReference.executor": "Run",
-    "JUnit.SummaryGeneratorTest.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Libraries",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.DiffUtilTest.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.DiffUtilTest.testGetAddedLines.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.DiffUtilTest.testGetRemovedLines.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.DiffUtilTest.testGetUnifiedDiff.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryTest.testLoadCommit.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryTest.testSaveSnapshot.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.RepositoryTest.testUpdateHeadReference.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.SummaryGeneratorTest.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Working Directory\Uni Projects\Azaala_VCS\src\com\azaala\" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.azaala.vcs.Main" />
       <module name="Azaala_VCS" />
@@ -83,84 +91,17 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="RepositoryTest.testLoadCommit" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Azaala_VCS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.azaala.tests.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.azaala.tests" />
-      <option name="MAIN_CLASS_NAME" value="com.azaala.tests.RepositoryTest" />
-      <option name="METHOD_NAME" value="testLoadCommit" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="RepositoryTest.testSaveSnapshot" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Azaala_VCS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.azaala.tests.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.azaala.tests" />
-      <option name="MAIN_CLASS_NAME" value="com.azaala.tests.RepositoryTest" />
-      <option name="METHOD_NAME" value="testSaveSnapshot" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="RepositoryTest.testUpdateHeadReference" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Azaala_VCS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.azaala.tests.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.azaala.tests" />
-      <option name="MAIN_CLASS_NAME" value="com.azaala.tests.RepositoryTest" />
-      <option name="METHOD_NAME" value="testUpdateHeadReference" />
-      <option name="TEST_OBJECT" value="method" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="SummaryGeneratorTest" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
-      <module name="Azaala_VCS" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="com.azaala.tests.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <option name="PACKAGE_NAME" value="com.azaala.tests" />
-      <option name="MAIN_CLASS_NAME" value="com.azaala.tests.SummaryGeneratorTest" />
-      <option name="TEST_OBJECT" value="class" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Main" />
-        <item itemvalue="JUnit.SummaryGeneratorTest" />
-        <item itemvalue="JUnit.RepositoryTest.testUpdateHeadReference" />
-        <item itemvalue="JUnit.RepositoryTest.testLoadCommit" />
-        <item itemvalue="JUnit.RepositoryTest.testSaveSnapshot" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84" />
-        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.27397.103" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.27397.103" />
       </set>
     </attachedChunks>
   </component>
@@ -178,7 +119,9 @@
       <workItem from="1760640025531" duration="20000" />
       <workItem from="1760640428814" duration="14000" />
       <workItem from="1760640723266" duration="11000" />
-      <workItem from="1760942614613" duration="2803000" />
+      <workItem from="1760942614613" duration="5007000" />
+      <workItem from="1761278094589" duration="1000000" />
+      <workItem from="1761280234551" duration="2862000" />
     </task>
     <task id="LOCAL-00001" summary="push all files to remote">
       <option name="closed" value="true" />
@@ -228,7 +171,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760945381944</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="update .gitignore to include .idea directory and modify workspace.xml for IntelliJ IDEA configuration">
+      <option name="closed" value="true" />
+      <created>1760945447908</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1760945447908</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -239,6 +190,7 @@
     <MESSAGE value="update .gitignore to exclude .idea directory" />
     <MESSAGE value="update .gitignore" />
     <MESSAGE value="add project configuration files for IntelliJ IDEA" />
-    <option name="LAST_COMMIT_MESSAGE" value="add project configuration files for IntelliJ IDEA" />
+    <MESSAGE value="update .gitignore to include .idea directory and modify workspace.xml for IntelliJ IDEA configuration" />
+    <option name="LAST_COMMIT_MESSAGE" value="update .gitignore to include .idea directory and modify workspace.xml for IntelliJ IDEA configuration" />
   </component>
 </project>

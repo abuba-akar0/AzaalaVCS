@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 public class SummaryGenerator {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private static final Pattern FUNCTION_PATTERN = Pattern.compile(
-        "(public|private|protected)?\\s+\\w+\\s+\\w+\\(.*\\)\\s*\\{?");
+            "(public|private|protected)?\\s+\\w+\\s+\\w+\\(.*\\)\\s*\\{?");
     private static final Pattern TODO_PATTERN = Pattern.compile("(TODO|FIXME):\\s*(.*)");
 
     /**
@@ -27,41 +27,56 @@ public class SummaryGenerator {
             return "Invalid commit";
         }
 
+        StringBuilder summary = new StringBuilder();
+        summary.append("=== Commit Summary ===\n");
+        summary.append("ID: ").append(commit.getCommitId()).append("\n");
+        summary.append("Message: ").append(commit.getMessage()).append("\n");
+        if (commit.getTimestamp() != null) {
+            summary.append("Time: ").append(commit.getTimestamp().format(FORMATTER)).append("\n");
+        }
+        summary.append("\n");
+
         int fileCount = commit.getFileCount();
 
         if (previousCommit == null) {
-            return "Initial commit with " + fileCount + " file" + (fileCount != 1 ? "s" : "");
+            summary.append("Type: Initial commit\n");
+            summary.append("Files added: ").append(fileCount).append("\n");
+        } else {
+            int previousFileCount = previousCommit.getFileCount();
+            int difference = fileCount - previousFileCount;
+
+            if (difference > 0) {
+                summary.append("Files added: ").append(difference).append(" (total: ").append(fileCount).append(")\n");
+            } else if (difference < 0) {
+                summary.append("Files removed: ").append(Math.abs(difference)).append(" (total: ").append(fileCount).append(")\n");
+            } else {
+                summary.append("Files modified (no count change): ").append(fileCount).append("\n");
+            }
         }
 
-        int previousFileCount = previousCommit.getFileCount();
-        int difference = fileCount - previousFileCount;
-
-        StringBuilder summary = new StringBuilder();
-
-        // Basic file count summary
-        if (difference > 0) {
-            summary.append("Added ").append(difference).append(" file")
-                  .append(difference != 1 ? "s" : "")
-                  .append(" (total: ").append(fileCount).append(")");
-        } else if (difference < 0) {
-            summary.append("Removed ").append(Math.abs(difference)).append(" file")
-                  .append(Math.abs(difference) != 1 ? "s" : "")
-                  .append(" (total: ").append(fileCount).append(")");
-        } else {
-            summary.append("Modified ").append(fileCount).append(" file")
-                  .append(fileCount != 1 ? "s" : "");
+        List<String> changedFiles = commit.getChangedFiles();
+        if (changedFiles == null) {
+            changedFiles = java.util.Collections.emptyList();
         }
 
         // Identify file types
-        int codeFiles = countFilesByType(commit.getChangedFiles(), "java", "py", "cpp", "js");
-        int docFiles = countFilesByType(commit.getChangedFiles(), "md", "txt", "pdf", "doc");
-        int configFiles = countFilesByType(commit.getChangedFiles(), "xml", "json", "yml", "properties");
+        int codeFiles = countFilesByType(changedFiles, "java", "py", "cpp", "js");
+        int docFiles = countFilesByType(changedFiles, "md", "txt", "pdf", "doc");
+        int configFiles = countFilesByType(changedFiles, "xml", "json", "yml", "properties");
 
-        if (codeFiles > 0 || docFiles > 0 || configFiles > 0) {
-            summary.append("\nTypes: ");
-            if (codeFiles > 0) summary.append("code (").append(codeFiles).append(") ");
-            if (docFiles > 0) summary.append("docs (").append(docFiles).append(") ");
-            if (configFiles > 0) summary.append("config (").append(configFiles).append(") ");
+        summary.append("\nBreakdown:\n");
+        summary.append(" - Code files: ").append(codeFiles).append("\n");
+        summary.append(" - Docs: ").append(docFiles).append("\n");
+        summary.append(" - Config: ").append(configFiles).append("\n");
+
+        // List changed files (limited to avoid huge output)
+        summary.append("\nChanged files (").append(changedFiles.size()).append("):\n");
+        int limit = Math.min(changedFiles.size(), 20);
+        for (int i = 0; i < limit; i++) {
+            summary.append(" - ").append(changedFiles.get(i)).append("\n");
+        }
+        if (changedFiles.size() > limit) {
+            summary.append(" - ... and ").append(changedFiles.size() - limit).append(" more\n");
         }
 
         return summary.toString();
@@ -76,7 +91,9 @@ public class SummaryGenerator {
      */
     private int countFilesByType(List<String> files, String... extensions) {
         int count = 0;
+        if (files == null) return 0;
         for (String file : files) {
+            if (file == null) continue;
             String lowercaseFile = file.toLowerCase();
             for (String ext : extensions) {
                 if (lowercaseFile.endsWith("." + ext)) {
@@ -105,13 +122,19 @@ public class SummaryGenerator {
         summary.append("Total commits: ").append(commits.size()).append("\n\n");
 
         int count = Math.min(limit, commits.size());
-        for (int i = commits.size() - 1; i >= commits.size() - count; i--) {
+        // Show newest first
+        for (int i = commits.size() - 1, shown = 0; i >= 0 && shown < count; i--, shown++) {
             Commit commit = commits.get(i);
-            summary.append("• ").append(commit.getCommitId())
-                    .append(" - ").append(commit.getMessage())
-                    .append(" (").append(commit.getTimestamp().format(FORMATTER))
-                    .append(")\n");
-            summary.append("  ").append(commit.getSummary()).append("\n\n");
+            summary.append((shown + 1)).append(") ").append(commit.getCommitId())
+                    .append(" - ").append(commit.getMessage()).append("\n");
+            if (commit.getTimestamp() != null) {
+                summary.append("   Date: ").append(commit.getTimestamp().format(FORMATTER)).append("\n");
+            }
+            String commitSummary = commit.getSummary();
+            if (commitSummary != null && !commitSummary.isEmpty()) {
+                summary.append("   Summary: ").append(commitSummary).append("\n");
+            }
+            summary.append("---\n");
         }
 
         return summary.toString();
@@ -129,9 +152,31 @@ public class SummaryGenerator {
         }
 
         List<String> stagedFiles = repository.getStagedFiles();
+        if (stagedFiles == null) stagedFiles = java.util.Collections.emptyList();
         List<Commit> commits = repository.getCommits();
+        if (commits == null) commits = java.util.Collections.emptyList();
 
-        return "Quick Status: " + commits.size() + " commits, " +
-                stagedFiles.size() + " staged files";
+        StringBuilder status = new StringBuilder();
+        status.append("=== Quick Status ===\n");
+        status.append("Commits: ").append(commits.size()).append("\n");
+        status.append("Staged files: ").append(stagedFiles.size()).append("\n");
+
+        int show = Math.min(stagedFiles.size(), 10);
+        if (show > 0) {
+            status.append("\nStaged files preview:\n");
+            for (int i = 0; i < show; i++) {
+                status.append(" - ").append(stagedFiles.get(i)).append("\n");
+            }
+            if (stagedFiles.size() > show) {
+                status.append(" - ... and ").append(stagedFiles.size() - show).append(" more\n");
+            }
+        }
+
+        if (!commits.isEmpty()) {
+            Commit last = commits.get(commits.size() - 1);
+            status.append("\nLast commit: ").append(last.getCommitId()).append(" - ").append(last.getMessage()).append("\n");
+        }
+
+        return status.toString();
     }
 }

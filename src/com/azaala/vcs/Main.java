@@ -312,7 +312,6 @@ public class Main {
      * Displays the commit log with error handling.
      */
     private static void showLog() {
-        System.out.println("\n--- Commit Log ---");
         executeLogCommand();
     }
 
