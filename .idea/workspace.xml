@@ -9,10 +9,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ac154c83-14e1-4596-91cd-4bfd8ef51ebe" name="Changes" comment="update .gitignore to include .idea directory and modify workspace.xml for IntelliJ IDEA configuration">
+    <list default="true" id="ac154c83-14e1-4596-91cd-4bfd8ef51ebe" name="Changes" comment="refactor: enhance commit summary and log display;">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/SummaryGenerator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/azaala/vcs/SummaryGenerator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/VCS.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/azaala/vcs/VCS.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -121,7 +119,7 @@
       <workItem from="1760640723266" duration="11000" />
       <workItem from="1760942614613" duration="5007000" />
       <workItem from="1761278094589" duration="1000000" />
-      <workItem from="1761280234551" duration="2862000" />
+      <workItem from="1761280234551" duration="3664000" />
     </task>
     <task id="LOCAL-00001" summary="push all files to remote">
       <option name="closed" value="true" />
@@ -179,7 +177,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760945447908</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="refactor: enhance commit summary and log display;">
+      <option name="closed" value="true" />
+      <created>1761292235829</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1761292235829</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -191,6 +197,7 @@
     <MESSAGE value="update .gitignore" />
     <MESSAGE value="add project configuration files for IntelliJ IDEA" />
     <MESSAGE value="update .gitignore to include .idea directory and modify workspace.xml for IntelliJ IDEA configuration" />
-    <option name="LAST_COMMIT_MESSAGE" value="update .gitignore to include .idea directory and modify workspace.xml for IntelliJ IDEA configuration" />
+    <MESSAGE value="refactor: enhance commit summary and log display;" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: enhance commit summary and log display;" />
   </component>
 </project>
