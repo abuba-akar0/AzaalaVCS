@@ -34,6 +34,9 @@ public class Dashboard extends JFrame {
     private JButton btnRefresh;
 
     public Dashboard() {
+        // Apply theme before creating components
+        UITheme.applyTheme();
+
         this.vcs = new VCS();
         initializeFrame();
         buildMenuBar();
@@ -47,61 +50,69 @@ public class Dashboard extends JFrame {
     private void initializeFrame() {
         setTitle("Azaala VCS - Dashboard");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1200, 700);
+        setSize(1400, 900);
         setLocationRelativeTo(null);
         setResizable(true);
 
-        try {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            System.err.println("Error setting look and feel: " + e.getMessage());
-        }
-
         mainPanel = new JPanel();
-        mainPanel.setLayout(new BorderLayout(5, 5));
-        mainPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        mainPanel.setLayout(new BorderLayout(UITheme.PADDING_MEDIUM, UITheme.PADDING_MEDIUM));
+        mainPanel.setBackground(UITheme.BACKGROUND_COLOR);
+        mainPanel.setBorder(new EmptyBorder(UITheme.PADDING_MEDIUM, UITheme.PADDING_MEDIUM,
+                                           UITheme.PADDING_MEDIUM, UITheme.PADDING_MEDIUM));
         setContentPane(mainPanel);
     }
 
     private void buildMenuBar() {
         JMenuBar menuBar = new JMenuBar();
+        menuBar.setBackground(UITheme.PANEL_BACKGROUND);
+        menuBar.setFont(UITheme.LABEL_FONT);
 
         JMenu fileMenu = new JMenu("File");
+        fileMenu.setFont(UITheme.LABEL_FONT);
         fileMenu.setMnemonic(KeyEvent.VK_F);
 
         JMenuItem miNewRepo = new JMenuItem("New Repository");
+        miNewRepo.setFont(UITheme.CONTENT_FONT);
         miNewRepo.addActionListener(e -> showNewRepositoryDialog());
         fileMenu.add(miNewRepo);
 
         JMenuItem miOpenRepo = new JMenuItem("Open Repository");
+        miOpenRepo.setFont(UITheme.CONTENT_FONT);
         miOpenRepo.addActionListener(e -> showOpenRepositoryDialog());
         fileMenu.add(miOpenRepo);
 
         fileMenu.addSeparator();
 
         JMenuItem miExit = new JMenuItem("Exit");
+        miExit.setFont(UITheme.CONTENT_FONT);
         miExit.addActionListener(e -> System.exit(0));
         fileMenu.add(miExit);
 
         JMenu editMenu = new JMenu("Edit");
+        editMenu.setFont(UITheme.LABEL_FONT);
         editMenu.setMnemonic(KeyEvent.VK_E);
 
         JMenuItem miPreferences = new JMenuItem("Preferences");
+        miPreferences.setFont(UITheme.CONTENT_FONT);
         miPreferences.addActionListener(e -> showPreferencesDialog());
         editMenu.add(miPreferences);
 
         JMenu viewMenu = new JMenu("View");
+        viewMenu.setFont(UITheme.LABEL_FONT);
         viewMenu.setMnemonic(KeyEvent.VK_V);
 
         JMenuItem miRefresh = new JMenuItem("Refresh");
+        miRefresh.setFont(UITheme.CONTENT_FONT);
         miRefresh.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0));
         miRefresh.addActionListener(e -> refreshAllTabs());
         viewMenu.add(miRefresh);
 
         JMenu helpMenu = new JMenu("Help");
+        helpMenu.setFont(UITheme.LABEL_FONT);
         helpMenu.setMnemonic(KeyEvent.VK_H);
 
         JMenuItem miAbout = new JMenuItem("About");
+        miAbout.setFont(UITheme.CONTENT_FONT);
         miAbout.addActionListener(e -> showAboutDialog());
         helpMenu.add(miAbout);
 
@@ -116,27 +127,47 @@ public class Dashboard extends JFrame {
     private void buildToolBar() {
         JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false);
+        toolBar.setBackground(UITheme.PANEL_BACKGROUND);
+        toolBar.setRollover(true);
+        toolBar.setBorder(BorderFactory.createEmptyBorder(UITheme.PADDING_SMALL, UITheme.PADDING_SMALL,
+                                                          UITheme.PADDING_SMALL, UITheme.PADDING_SMALL));
 
-        btnInit = new JButton("Initialize");
+        btnInit = new JButton("📁 Initialize");
         btnInit.addActionListener(e -> handleInitRepository());
+        btnInit.setToolTipText("Create new VCS repository in selected directory");
+        UITheme.stylePrimaryButton(btnInit);
         toolBar.add(btnInit);
 
-        btnAdd = new JButton("Add File");
+        toolBar.addSeparator(new Dimension(UITheme.SPACING_SECTION, 0));
+
+        btnAdd = new JButton("➕ Add File");
         btnAdd.addActionListener(e -> handleAddFile());
+        btnAdd.setToolTipText("Stage files for the next commit");
+        UITheme.stylePrimaryButton(btnAdd);
         toolBar.add(btnAdd);
 
-        btnCommit = new JButton("Commit");
+        toolBar.addSeparator(new Dimension(UITheme.SPACING_SECTION, 0));
+
+        btnCommit = new JButton("✓ Commit");
         btnCommit.addActionListener(e -> handleCommit());
+        btnCommit.setToolTipText("Save staged changes to repository history");
+        UITheme.styleSuccessButton(btnCommit);
         toolBar.add(btnCommit);
 
-        toolBar.addSeparator();
+        toolBar.addSeparator(new Dimension(UITheme.SPACING_SECTION * 2, 0));
 
-        btnDiff = new JButton("View Diff");
+        btnDiff = new JButton("⇄ View Diff");
         btnDiff.addActionListener(e -> handleViewDiff());
+        btnDiff.setToolTipText("Compare two commits to see what changed");
+        UITheme.stylePrimaryButton(btnDiff);
         toolBar.add(btnDiff);
 
-        btnRefresh = new JButton("Refresh");
+        toolBar.addSeparator(new Dimension(UITheme.SPACING_SECTION, 0));
+
+        btnRefresh = new JButton("🔄 Refresh");
         btnRefresh.addActionListener(e -> refreshAllTabs());
+        btnRefresh.setToolTipText("Update all tabs with latest repository data");
+        UITheme.stylePrimaryButton(btnRefresh);
         toolBar.add(btnRefresh);
 
         mainPanel.add(toolBar, BorderLayout.NORTH);
@@ -145,32 +176,42 @@ public class Dashboard extends JFrame {
     private void buildTabbedPane() {
         tabbedPane = new JTabbedPane();
         tabbedPane.setTabPlacement(JTabbedPane.TOP);
+        tabbedPane.setBackground(UITheme.BACKGROUND_COLOR);
+        tabbedPane.setFont(UITheme.LABEL_FONT);
 
         overviewPanel = new OverviewPanel(vcs, repository);
-        tabbedPane.addTab("Overview", overviewPanel);
+        tabbedPane.addTab("📊 Overview", overviewPanel);
 
         historyPanel = new HistoryPanel(vcs, repository);
-        tabbedPane.addTab("Commit History", historyPanel);
+        tabbedPane.addTab("📜 Commit History", historyPanel);
 
         statusPanel = new StatusPanel(vcs, repository);
-        tabbedPane.addTab("File Status", statusPanel);
+        tabbedPane.addTab("📁 File Status", statusPanel);
 
         diffPanel = new DiffPanel(vcs, repository);
-        tabbedPane.addTab("Diff", diffPanel);
+        tabbedPane.addTab("⇄ Diff", diffPanel);
 
         settingsPanel = new SettingsPanel(vcs, repository);
-        tabbedPane.addTab("Settings", settingsPanel);
+        tabbedPane.addTab("⚙ Settings", settingsPanel);
 
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
     }
 
     private void buildStatusBar() {
         JPanel statusBar = new JPanel();
-        statusBar.setLayout(new BorderLayout());
-        statusBar.setBorder(new EtchedBorder(EtchedBorder.LOWERED));
+        statusBar.setLayout(new BorderLayout(UITheme.PADDING_MEDIUM, UITheme.PADDING_MEDIUM));
+        statusBar.setBackground(UITheme.PANEL_BACKGROUND);
+        statusBar.setBorder(BorderFactory.createCompoundBorder(
+            new EtchedBorder(EtchedBorder.LOWERED),
+            new EmptyBorder(UITheme.PADDING_SMALL, UITheme.PADDING_MEDIUM,
+                           UITheme.PADDING_SMALL, UITheme.PADDING_MEDIUM)
+        ));
 
         repositoryLabel = new JLabel("Repository: Not initialized");
+        UITheme.styleLabel(repositoryLabel);
+
         statusLabel = new JLabel("Ready");
+        UITheme.styleLabel(statusLabel);
 
         statusBar.add(repositoryLabel, BorderLayout.WEST);
         statusBar.add(statusLabel, BorderLayout.EAST);

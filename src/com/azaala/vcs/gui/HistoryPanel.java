@@ -23,12 +23,35 @@ public class HistoryPanel extends JPanel {
         this.vcs = vcs;
         this.repository = repository;
 
-        setLayout(new BorderLayout());
+        setLayout(new BorderLayout(UITheme.PADDING_MEDIUM, UITheme.PADDING_MEDIUM));
+        setBackground(UITheme.BACKGROUND_COLOR);
+        setBorder(BorderFactory.createEmptyBorder(UITheme.PADDING_MEDIUM, UITheme.PADDING_MEDIUM,
+                                                  UITheme.PADDING_MEDIUM, UITheme.PADDING_MEDIUM));
+
+        // Add info panel
+        JPanel infoPanel = UITheme.createInfoPanel(
+            "Commit History",
+            "Browse all commits in your repository. " +
+            "Click a commit row to view detailed information including files changed. " +
+            "Use this to track project changes over time and understand project evolution."
+        );
+        add(infoPanel, BorderLayout.NORTH);
+
+        // Create center panel with table and details
+        JPanel centerPanel = new JPanel(new BorderLayout(UITheme.SPACING_SECTION, UITheme.SPACING_SECTION));
+        centerPanel.setBackground(UITheme.BACKGROUND_COLOR);
 
         String[] columns = {"Commit ID", "Message", "Date", "Files"};
-        tableModel = new DefaultTableModel(columns, 0);
+        tableModel = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         historyTable = new JTable(tableModel);
         historyTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        UITheme.styleTable(historyTable);
+
         historyTable.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 int row = historyTable.getSelectedRow();
@@ -39,14 +62,19 @@ public class HistoryPanel extends JPanel {
         });
 
         JScrollPane scrollPane = new JScrollPane(historyTable);
-        add(scrollPane, BorderLayout.CENTER);
+        scrollPane.setBorder(UITheme.createStyledBorder("All Commits"));
+        centerPanel.add(scrollPane, BorderLayout.CENTER);
 
         detailsArea = new JTextArea();
         detailsArea.setEditable(false);
-        detailsArea.setFont(new Font("Monospaced", Font.PLAIN, 11));
+        UITheme.styleTextArea(detailsArea);
+
         JScrollPane detailsScroll = new JScrollPane(detailsArea);
         detailsScroll.setPreferredSize(new Dimension(0, 150));
-        add(detailsScroll, BorderLayout.SOUTH);
+        detailsScroll.setBorder(UITheme.createStyledBorder("Commit Details"));
+        centerPanel.add(detailsScroll, BorderLayout.SOUTH);
+
+        add(centerPanel, BorderLayout.CENTER);
     }
 
     public void setRepository(Repository repo) {
@@ -78,15 +106,19 @@ public class HistoryPanel extends JPanel {
         if (repository != null && row >= 0 && row < repository.getCommits().size()) {
             Commit commit = repository.getCommits().get(row);
             StringBuilder details = new StringBuilder();
+            details.append("═══════════════════════════════════════════\n");
             details.append("Commit ID: ").append(commit.getCommitId()).append("\n");
             details.append("Message: ").append(commit.getMessage()).append("\n");
             details.append("Timestamp: ").append(commit.getTimestamp()).append("\n");
-            details.append("Files Changed: ").append(commit.getFileCount()).append("\n\n");
+            details.append("Files Changed: ").append(commit.getFileCount()).append("\n");
+            details.append("═══════════════════════════════════════════\n\n");
             details.append("Changed Files:\n");
+            details.append("───────────────────────────────────────────\n");
             for (String file : commit.getChangedFiles()) {
-                details.append("  - ").append(file).append("\n");
+                details.append("  ✓ ").append(file).append("\n");
             }
             detailsArea.setText(details.toString());
+            detailsArea.setCaretPosition(0);
         }
     }
 }

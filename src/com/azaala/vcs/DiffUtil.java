@@ -19,7 +19,7 @@ public class DiffUtil {
      * @return List of diff lines
      */
     public List<String> compareCommits(Commit commit1, Commit commit2) {
-        List<String> diffLines = new ArrayList<>();
+        List <String> diffLines = new ArrayList<>();
 
         if (commit1 == null || commit2 == null) {
             diffLines.add("Cannot compare: one or both commits are null");

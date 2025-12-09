@@ -24,32 +24,71 @@ public class OverviewPanel extends JPanel {
         this.vcs = vcs;
         this.repository = repository;
 
-        setLayout(new GridLayout(6, 2, 10, 10));
-        setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        setLayout(new BorderLayout(UITheme.PADDING_MEDIUM, UITheme.PADDING_MEDIUM));
+        setBackground(UITheme.BACKGROUND_COLOR);
+        setBorder(BorderFactory.createEmptyBorder(UITheme.PADDING_MEDIUM, UITheme.PADDING_MEDIUM,
+                                                  UITheme.PADDING_MEDIUM, UITheme.PADDING_MEDIUM));
 
-        add(new JLabel("Repository Name:"));
-        lblRepoName = new JLabel("N/A");
-        add(lblRepoName);
+        // Add info panel at top
+        JPanel infoPanel = UITheme.createInfoPanel(
+            "Repository Overview",
+            "View key statistics and information about your repository. " +
+            "Shows the total number of commits, staged files, and tracked files. " +
+            "Use this tab to quickly assess your repository status."
+        );
+        add(infoPanel, BorderLayout.NORTH);
 
-        add(new JLabel("Path:"));
-        lblRepoPath = new JLabel("N/A");
-        add(lblRepoPath);
+        // Create stats panel
+        JPanel statsPanel = createStatsPanel();
+        add(statsPanel, BorderLayout.CENTER);
+    }
 
-        add(new JLabel("Created:"));
-        lblCreatedDate = new JLabel("N/A");
-        add(lblCreatedDate);
+    private JPanel createStatsPanel() {
+        JPanel panel = new JPanel();
+        panel.setLayout(new GridLayout(3, 2, UITheme.SPACING_SECTION, UITheme.SPACING_SECTION));
+        panel.setBackground(UITheme.BACKGROUND_COLOR);
+        panel.setBorder(BorderFactory.createEmptyBorder(UITheme.PADDING_LARGE, UITheme.PADDING_LARGE,
+                                                        UITheme.PADDING_LARGE, UITheme.PADDING_LARGE));
 
-        add(new JLabel("Total Commits:"));
-        lblTotalCommits = new JLabel("0");
-        add(lblTotalCommits);
+        // Row 1: Repo Name and Path
+        panel.add(createStatItem("Repository Name:", lblRepoName = createValueLabel("N/A")));
+        panel.add(createStatItem("Path:", lblRepoPath = createValueLabel("N/A")));
 
-        add(new JLabel("Staged Files:"));
-        lblStagedFiles = new JLabel("0");
-        add(lblStagedFiles);
+        // Row 2: Created Date and Total Commits
+        panel.add(createStatItem("Created:", lblCreatedDate = createValueLabel("N/A")));
+        panel.add(createStatItem("Total Commits:", lblTotalCommits = createValueLabel("0")));
 
-        add(new JLabel("Tracked Files:"));
-        lblTrackedFiles = new JLabel("0");
-        add(lblTrackedFiles);
+        // Row 3: Staged Files and Tracked Files
+        panel.add(createStatItem("Staged Files:", lblStagedFiles = createValueLabel("0")));
+        panel.add(createStatItem("Tracked Files:", lblTrackedFiles = createValueLabel("0")));
+
+        return panel;
+    }
+
+    private JPanel createStatItem(String labelText, JLabel valueLabel) {
+        JPanel panel = new JPanel(new BorderLayout(UITheme.SPACING_COMPONENT, 0));
+        panel.setBackground(UITheme.PANEL_BACKGROUND);
+        panel.setBorder(BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(UITheme.PRIMARY_COLOR, 2),
+            BorderFactory.createEmptyBorder(UITheme.PADDING_MEDIUM, UITheme.PADDING_MEDIUM,
+                                           UITheme.PADDING_MEDIUM, UITheme.PADDING_MEDIUM)
+        ));
+
+        JLabel label = new JLabel(labelText);
+        label.setFont(UITheme.LABEL_FONT);
+        label.setForeground(UITheme.TEXT_PRIMARY);
+
+        panel.add(label, BorderLayout.WEST);
+        panel.add(valueLabel, BorderLayout.CENTER);
+
+        return panel;
+    }
+
+    private JLabel createValueLabel(String text) {
+        JLabel label = new JLabel(text);
+        UITheme.styleTitleLabel(label);
+        label.setForeground(UITheme.PRIMARY_COLOR);
+        return label;
     }
 
     public void setRepository(Repository repo) {
