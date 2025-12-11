@@ -627,23 +627,23 @@ public class Main {
      */
     private static void printHelp() {
         System.out.println("\n╔════════════════════════════════════════════════════════════════╗");
-        System.out.println("║         " + APP_NAME + " v" + VERSION + " - Simple Version Control System              ║");
+        System.out.println("║         " + APP_NAME + " v" + VERSION + " - Simple Version Control System        ║");
         System.out.println("╚════════════════════════════════════════════════════════════════╝");
         System.out.println();
         System.out.println("USAGE: java -jar azaala-vcs.jar [command] [options]");
         System.out.println();
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("==================================================================");
         System.out.println("COMMANDS:");
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("==================================================================");
         System.out.println();
 
-        System.out.println("📁 REPOSITORY MANAGEMENT:");
+        System.out.println("REPOSITORY MANAGEMENT:");
         System.out.println("  init [path]              Initialize a new repository");
         System.out.println("                           Default: current directory");
         System.out.println("                           Example: init /path/to/repo");
         System.out.println();
 
-        System.out.println("➕ FILE STAGING:");
+        System.out.println("FILE STAGING:");
         System.out.println("  add <file-path>          Add single file to staging area");
         System.out.println("                           Example: add myfile.txt");
         System.out.println();
@@ -652,12 +652,12 @@ public class Main {
         System.out.println("                           Example: add-all");
         System.out.println();
 
-        System.out.println("✓ COMMITTING:");
+        System.out.println("COMMITTING:");
         System.out.println("  commit \"<message>\"       Commit staged changes");
         System.out.println("                           Example: commit \"Initial commit\"");
         System.out.println();
 
-        System.out.println("📊 VIEWING INFORMATION:");
+        System.out.println("VIEWING INFORMATION:");
         System.out.println("  status                   Show repository status");
         System.out.println("  st                       (Short for status)");
         System.out.println("                           Example: status");
@@ -667,20 +667,20 @@ public class Main {
         System.out.println("                           Example: log");
         System.out.println();
 
-        System.out.println("⇄ COMPARISON:");
+        System.out.println("COMPARISON:");
         System.out.println("  diff <id1> <id2>         Show differences between commits");
         System.out.println("                           Example: diff abc123 def456");
         System.out.println("                           Use 'log' to see commit IDs");
         System.out.println();
 
-        System.out.println("📈 ACTIVITY:");
+        System.out.println("ACTIVITY:");
         System.out.println("  activity [limit]         Show activity summary");
         System.out.println("  summary [limit]          (Same as activity)");
         System.out.println("                           Default limit: 5 commits");
         System.out.println("                           Example: activity 10");
         System.out.println();
 
-        System.out.println("ℹ️  INFORMATION:");
+        System.out.println("INFORMATION:");
         System.out.println("  help                     Show this help message");
         System.out.println("  -h, --help               (Same as help)");
         System.out.println();
@@ -688,16 +688,16 @@ public class Main {
         System.out.println("  -v, --version            (Same as version)");
         System.out.println();
 
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("===================================================================");
         System.out.println("INTERACTIVE MODE:");
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("===================================================================");
         System.out.println();
         System.out.println("Run without arguments to enter interactive menu mode:");
         System.out.println("  java -jar azaala-vcs.jar");
         System.out.println();
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("===================================================================");
         System.out.println("EXAMPLES:");
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("===================================================================");
         System.out.println();
         System.out.println("1. Initialize a repository:");
         System.out.println("   java -jar azaala-vcs.jar init");
@@ -723,9 +723,9 @@ public class Main {
         System.out.println("8. Show activity summary:");
         System.out.println("   java -jar azaala-vcs.jar activity 10");
         System.out.println();
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("==================================================================");
         System.out.println("FEATURES:");
-        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("==================================================================");
         System.out.println();
         System.out.println("✓ Initialize repositories");
         System.out.println("✓ Stage files (single & batch)");
