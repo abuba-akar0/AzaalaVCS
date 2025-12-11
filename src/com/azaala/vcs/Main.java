@@ -2,10 +2,12 @@ package com.azaala.vcs;
 
 import java.util.List;
 import java.util.Scanner;
+import javax.swing.SwingUtilities;
+import com.azaala.vcs.gui.Dashboard;
 
 /**
  * Main entry point for the Azaala Version Control System.
- * Provides a menu-driven interface for interacting with the VCS.
+ * Launches the GUI Dashboard interface for interacting with the VCS.
  */
 public class Main {
     private static final Scanner scanner = new Scanner(System.in);
@@ -16,10 +18,17 @@ public class Main {
 
     /**
      * Main method that starts the application.
+     * Launches the GUI Dashboard interface.
      *
      * @param args Command line arguments passed to the application
      */
     public static void main(String[] args) {
+        // Check if console mode is requested via command line
+        if (args.length > 0 && (args[0].equals("-c") || args[0].equals("--console"))) {
+            runConsoleMode(args);
+            return;
+        }
+
         // Check if help is requested via command line
         if (args.length > 0 && (args[0].equals("-h") || args[0].equals("--help"))) {
             printHelp();
@@ -32,9 +41,29 @@ public class Main {
             return;
         }
 
+        // Launch GUI Dashboard in Swing Event Dispatch Thread
+        SwingUtilities.invokeLater(() -> {
+            try {
+                new Dashboard();
+            } catch (Exception e) {
+                System.err.println("Failed to launch GUI: " + e.getMessage());
+                e.printStackTrace();
+                // Fallback to console mode if GUI fails
+                runConsoleMode(new String[]{});
+            }
+        });
+    }
+
+    /**
+     * Runs the console mode of the application.
+     * @param args Command line arguments
+     */
+    private static void runConsoleMode(String[] args) {
         // Check for direct command execution
-        if (args.length > 0) {
-            executeCommand(args);
+        if (args.length > 1) {
+            String[] commandArgs = new String[args.length - 1];
+            System.arraycopy(args, 1, commandArgs, 0, args.length - 1);
+            executeCommand(commandArgs);
             return;
         }
 

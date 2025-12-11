@@ -496,4 +496,14 @@ public class VCS {
             return "Error generating activity summary: " + e.getMessage();
         }
     }
+
+    /**
+     * Sets the repository instance.
+     * Used when loading an existing repository or updating repository reference.
+     *
+     * @param repo The Repository object to set
+     */
+    public void setRepository(Repository repo) {
+        this.repository = repo;
+    }
 }
