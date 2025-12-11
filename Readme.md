@@ -9,7 +9,7 @@
 
 A lightweight, educational version control system built with Java featuring both a modern GUI and command-line interface.
 
-[Documentation](#docs/Azaala) • [Features](#features) • [Quick Start](#quick-start) • [Architecture](#architecture)
+[Documentation](#documentation) • [Features](#features) • [Quick Start](#quick-start) • [Architecture](#architecture)
 
 </div>
 
