@@ -13,18 +13,18 @@ public class UITheme {
     // Primary Colors - Vibrant and Visible
     public static final Color PRIMARY_COLOR = new Color(41, 128, 185);        // Professional Blue
     public static final Color ACCENT_COLOR = new Color(39, 174, 96);          // Fresh Green
+    public static final Color SUCCESS_COLOR = new Color(46, 204, 113);        // Vibrant Green
+    public static final Color WARNING_COLOR = new Color(241, 196, 15);        // Vibrant Yellow
+    public static final Color ERROR_COLOR = new Color(231, 76, 60);           // Vibrant Red
+
+    // Background and Panel Colors
     public static final Color BACKGROUND_COLOR = new Color(248, 250, 252);    // Light Gray-Blue
     public static final Color PANEL_BACKGROUND = new Color(236, 241, 247);    // Slightly darker gray-blue
 
     // Text Colors - High Contrast
     public static final Color TEXT_PRIMARY = new Color(33, 47, 61);           // Very Dark Blue-Gray
     public static final Color TEXT_SECONDARY = new Color(89, 106, 122);       // Medium Blue-Gray
-    public static final Color TEXT_ON_PRIMARY = new Color(2, 0, 0);     // White
-
-    // Status Colors - More Vibrant
-    public static final Color SUCCESS_COLOR = new Color(46, 204, 113);        // Vibrant Green
-    public static final Color WARNING_COLOR = new Color(241, 196, 15);        // Vibrant Yellow
-    public static final Color ERROR_COLOR = new Color(231, 76, 60);           // Vibrant Red
+    public static final Color TEXT_ON_PRIMARY = Color.BLACK;                 // White
 
     // Borders & Separators - Better Visibility
     public static final Color BORDER_COLOR = new Color(189, 206, 221);        // Light Blue
@@ -269,8 +269,72 @@ public class UITheme {
             UIManager.put("Table.selectionForeground", TEXT_ON_PRIMARY);
             UIManager.put("List.selectionBackground", PRIMARY_COLOR);
             UIManager.put("List.selectionForeground", TEXT_ON_PRIMARY);
+
         } catch (Exception e) {
             System.err.println("Error applying theme: " + e.getMessage());
+        }
+    }
+
+
+    /**
+     * Apply theme to all components in a container recursively
+     */
+    public static void applyThemeToComponent(Component comp) {
+        if (comp == null) return;
+
+        try {
+            if (comp instanceof JPanel) {
+                comp.setBackground(BACKGROUND_COLOR);
+            } else if (comp instanceof JLabel) {
+                comp.setForeground(TEXT_PRIMARY);
+            } else if (comp instanceof JButton) {
+                JButton btn = (JButton) comp;
+                // Preserve primary/success button colors
+                Color bg = btn.getBackground();
+                if (!bg.equals(PRIMARY_COLOR) && !bg.equals(SUCCESS_COLOR)) {
+                    btn.setBackground(PANEL_BACKGROUND);
+                    btn.setForeground(TEXT_PRIMARY);
+                }
+            } else if (comp instanceof JCheckBox) {
+                JCheckBox cb = (JCheckBox) comp;
+                cb.setForeground(TEXT_PRIMARY);
+                cb.setBackground(BACKGROUND_COLOR);
+            } else if (comp instanceof JTextField) {
+                JTextField tf = (JTextField) comp;
+                tf.setForeground(TEXT_PRIMARY);
+                tf.setBackground(PANEL_BACKGROUND);
+                tf.setCaretColor(TEXT_PRIMARY);
+            } else if (comp instanceof JTextArea) {
+                JTextArea ta = (JTextArea) comp;
+                ta.setForeground(TEXT_PRIMARY);
+                ta.setBackground(PANEL_BACKGROUND);
+                ta.setCaretColor(TEXT_PRIMARY);
+            } else if (comp instanceof JComboBox) {
+                JComboBox<?> cb = (JComboBox<?>) comp;
+                cb.setForeground(TEXT_PRIMARY);
+                cb.setBackground(PANEL_BACKGROUND);
+            } else if (comp instanceof JTabbedPane) {
+                JTabbedPane tp = (JTabbedPane) comp;
+                tp.setBackground(PANEL_BACKGROUND);
+                tp.setForeground(TEXT_PRIMARY);
+            } else if (comp instanceof JMenuBar) {
+                JMenuBar mb = (JMenuBar) comp;
+                mb.setBackground(PANEL_BACKGROUND);
+                mb.setForeground(TEXT_PRIMARY);
+            } else if (comp instanceof JMenu) {
+                comp.setForeground(TEXT_PRIMARY);
+            } else if (comp instanceof JMenuItem) {
+                comp.setForeground(TEXT_PRIMARY);
+            }
+
+            // Recursively apply to children
+            if (comp instanceof Container) {
+                for (Component child : ((Container) comp).getComponents()) {
+                    applyThemeToComponent(child);
+                }
+            }
+        } catch (Exception e) {
+            // Silently continue on errors
         }
     }
 

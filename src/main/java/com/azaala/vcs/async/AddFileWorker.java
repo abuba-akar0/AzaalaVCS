@@ -104,7 +104,115 @@ public class AddFileWorker extends BaseVCSWorker<Boolean> {
 
     @Override
     protected void onError(Exception exception) {
-        System.err.println("✗ File addition error: " + exception.getMessage());
-        exception.printStackTrace();
+        String errorMessage = exception.getMessage();
+
+        // Show ONLY user-friendly error dialog (no technical console output)
+        showErrorDialog(errorMessage);
+    }
+
+    /**
+     * Display user-friendly error dialog for file operations
+     */
+    private void showErrorDialog(String errorMessage) {
+        try {
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                String title = "File Addition Failed";
+                String userMessage = buildUserFriendlyMessage(errorMessage);
+
+                javax.swing.JOptionPane.showMessageDialog(
+                    null,
+                    userMessage,
+                    title,
+                    javax.swing.JOptionPane.ERROR_MESSAGE
+                );
+            });
+        } catch (Exception e) {
+            System.err.println("Could not display error dialog: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Build user-friendly error message for file operations
+     */
+    private String buildUserFriendlyMessage(String errorMessage) {
+        if (errorMessage == null) {
+            errorMessage = "Unknown error occurred";
+        }
+
+        String userMessage = "";
+
+        if (errorMessage.contains("File does not exist")) {
+            userMessage = "❌ File Not Found\n\n" +
+                "The file you selected no longer exists.\n\n" +
+                "Possible causes:\n" +
+                "• File was deleted or moved\n" +
+                "• File path is incorrect\n" +
+                "• Network drive disconnected\n\n" +
+                "What to do:\n" +
+                "1. Check if the file still exists\n" +
+                "2. Try browsing to the file again\n" +
+                "3. Make sure all network drives are connected";
+
+        } else if (errorMessage.contains("Path is not a file")) {
+            userMessage = "❌ Invalid Selection\n\n" +
+                "You selected a folder instead of a file.\n\n" +
+                "To add files:\n" +
+                "1. Click 'Add File' to select individual files\n" +
+                "2. Or click 'Add All Files' to add entire folder\n" +
+                "3. Select a file, not a folder";
+
+        } else if (errorMessage.contains("Cannot read file") || errorMessage.contains("Permission denied")) {
+            userMessage = "❌ Permission Denied\n\n" +
+                "You don't have permission to access this file.\n\n" +
+                "How to fix this:\n" +
+                "1. Check file permissions\n" +
+                "2. Make sure the file is readable\n" +
+                "3. Run the application with proper permissions\n" +
+                "4. Close any applications using this file\n\n" +
+                "📍 If this persists, contact your system administrator";
+
+        } else if (errorMessage.contains("outside repository")) {
+            userMessage = "❌ File Outside Repository\n\n" +
+                "This file is outside your repository directory.\n\n" +
+                "Repository Rules:\n" +
+                "• Files must be in or near the repository folder\n" +
+                "• You can add files from the same directory level\n\n" +
+                "What to do:\n" +
+                "1. Select files within your repository\n" +
+                "2. Or move the file to your repository\n" +
+                "3. Then try adding it again";
+
+        } else if (errorMessage.contains("Invalid file path")) {
+            userMessage = "❌ Invalid File Path\n\n" +
+                "The file path contains invalid characters.\n\n" +
+                "Avoid using:\n" +
+                "• Special characters: < > : \" | ? *\n" +
+                "• Control characters\n" +
+                "• Non-ASCII characters in some cases\n\n" +
+                "What to do:\n" +
+                "1. Rename the file with valid characters\n" +
+                "2. Then try adding it again";
+
+        } else if (errorMessage.contains("already added")) {
+            userMessage = "ℹ️ File Already Staged\n\n" +
+                "This file is already in your staging area.\n\n" +
+                "Actions:\n" +
+                "• The file is ready to be committed\n" +
+                "• Select other files if you want to add more\n" +
+                "• Click 'Commit' when you're ready";
+
+        } else {
+            userMessage = "❌ File Addition Failed\n\n" +
+                "An error occurred while adding the file.\n\n" +
+                "Error Details:\n" +
+                errorMessage + "\n\n" +
+                "What to try:\n" +
+                "1. Check if the file exists\n" +
+                "2. Verify file permissions\n" +
+                "3. Try with a different file\n" +
+                "4. Restart the application if needed";
+        }
+
+        return userMessage;
     }
 }

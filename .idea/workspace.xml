@@ -9,13 +9,118 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ac154c83-14e1-4596-91cd-4bfd8ef51ebe" name="Changes" comment="refactor: enhance commit summary and log display;">
+    <list default="true" id="ac154c83-14e1-4596-91cd-4bfd8ef51ebe" name="Changes" comment="feat: implement database persistence and repository management with async operations">
+      <change afterPath="$PROJECT_DIR$/docs/00_START_HERE.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/00_START_HERE_IMPLEMENTATION.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/ABOUT_PANEL_ALIGNMENT_FIX_FINAL.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/ABOUT_PANEL_DOCUMENTATION.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/ABOUT_PANEL_ENHANCEMENT_FINAL.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/ABOUT_PANEL_QUICK_REFERENCE.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/ABOUT_PANEL_VISUAL_COMPARISON.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/ABOUT_PANEL_VISUAL_DISPLAY_GUIDE.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/ADD_ALL_FILES_IMPLEMENTATION.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/ANALYSIS_SUMMARY.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/BUILD_FIX_SUMMARY.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/COMMIT_FILE_COPY_FIX.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/COMMIT_FIX_SUMMARY.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/CONSOLE_ARGUMENTS_COMPLETE.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/CONSOLE_QUICK_REFERENCE.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/DATABASE_INTEGRATION_COMPLETE.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/DATABASE_SETUP_GUIDE.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/DATABASE_THREADING_INTEGRATION_PLAN.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/DEVELOPER_QUICK_REFERENCE.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/DUPLICATE_FILES_FIX_FINAL.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/DUPLICATE_FILE_DETECTION.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/FINAL_COMPLETION_SUMMARY.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/FIXED_REPOSITORY_AND_STAGING_ISSUES.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/FOLDER_ADDITION_FEATURE.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/HYBRID_APPROACH_VERIFICATION.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/IMPLEMENTATION_CHECKLIST.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/IMPLEMENTATION_COMPLETE_SUMMARY.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/IMPLEMENTATION_SUMMARY.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/PATH_NORMALIZATION_FIX.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/PHASE_1_COMPLETION_REPORT.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/PHASE_3_THREADING_COMPLETE.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/PREFERENCES_DIALOG_FIXED.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/PREFERENCES_VERIFICATION_COMPLETE.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/PROJECT_DELIVERY_REPORT.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/PROJECT_STATUS.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/QUICK_FIX_NULL_REPOID.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/QUICK_REFERENCE_DATABASE_THREADING.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/QUICK_REFERENCE_SETTINGS_DUPLICATES.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/QUICK_START.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/README_DOCUMENTATION.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/REPO_INIT_WORKFLOW_IMPLEMENTATION.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/ROBUST_DIFF_IMPLEMENTATION.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/SESSION_COMPLETION_SUMMARY.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/SETTINGS_AND_DUPLICATE_FIXES.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/UI_ENHANCEMENT_FILE_BROWSER.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/docs/VISUAL_DIAGRAMS.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/async/AddAllFilesWorker.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/gui/DatabaseStatusPanel.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/persistence/dao/CommitFileDAO.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/persistence/models/ActivityLogEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/persistence/models/CommitEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/persistence/models/CommitFileEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/persistence/models/RepositoryEntity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/persistence/models/StagedFileEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/data/index/staged_files.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/architecture_diagram.png" beforeDir="false" afterPath="$PROJECT_DIR$/MAIN_JAVA_ANALYSIS.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/design_document.md" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/proposal.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/USER_FRIENDLY_ERROR_HANDLING.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/CommandHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/Commit.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/DiffUtil.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/FileHandler.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/Repository.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/SummaryGenerator.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/Utils.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/VCS.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/gui/Dashboard.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/gui/DiffPanel.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/gui/HistoryPanel.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/gui/OverviewPanel.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/gui/PreferencesDialog.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/gui/PreferencesManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/gui/RepositoryManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/gui/SettingsPanel.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/gui/StatusPanel.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/azaala/vcs/gui/UITheme.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/Repository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/Repository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/VCS.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/VCS.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/async/AddFileWorker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/async/AddFileWorker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/async/CommitWorker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/async/CommitWorker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/async/DiffWorker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/async/DiffWorker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/async/HistoryLoadWorker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/async/HistoryLoadWorker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/async/RepositoryInitWorker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/async/RepositoryInitWorker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/async/StatusLoadWorker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/async/StatusLoadWorker.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/gui/Dashboard.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/gui/Dashboard.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/gui/PreferencesDialog.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/gui/PreferencesDialog.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/gui/SettingsPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/gui/SettingsPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/gui/UITheme.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/gui/UITheme.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/persistence/dao/StagedFileDAO.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/azaala/vcs/persistence/dao/StagedFileDAO.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+      <option value="repository" />
+    </option>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -29,8 +134,12 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/abuba-akar0/AzaalaVCS.git&quot;,
-    &quot;accountId&quot;: &quot;46e03025-46a6-4d68-983d-b4d863f92b02&quot;
+    &quot;accountId&quot;: &quot;20e37f6e-0692-4908-b403-55e222e36833&quot;
   }
+}</component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
 }</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 4
@@ -42,6 +151,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Application.Dashboard.executor&quot;: &quot;Run&quot;,
     &quot;Application.Main.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.DiffUtilTest.executor&quot;: &quot;Run&quot;,
     &quot;JUnit.DiffUtilTest.testGetAddedLines.executor&quot;: &quot;Run&quot;,
@@ -55,27 +165,49 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/Working Directory/Uni Projects/Azaala_VCS&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.github.copilot.settings.customization.CustomizationConfigurable&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  },
+  &quot;keyToStringList&quot;: {
+    &quot;DatabaseDriversLRU&quot;: [
+      &quot;mysql&quot;
+    ]
   }
 }</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Working Directory\Uni Projects\Azaala_VCS\docs" />
+      <recent name="D:\Working Directory\Uni Projects\Azaala_VCS\src\resources" />
       <recent name="D:\Working Directory\Uni Projects\Azaala_VCS\src\com\azaala\" />
     </key>
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Application.Main">
+    <configuration name="Dashboard" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="com.azaala.vcs.gui.Dashboard" />
+      <module name="Azaala_VCS" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.azaala.vcs.gui.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="com.azaala.vcs.Main" />
       <module name="Azaala_VCS" />
@@ -92,14 +224,15 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.Main" />
+        <item itemvalue="Application.Dashboard" />
       </list>
     </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.27397.103" />
-        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.27397.103" />
+        <option value="bundled-jdk-30f59d01ecdd-cffe25b9f5b3-intellij.indexing.shared.core-IU-253.28294.334" />
+        <option value="bundled-js-predefined-d6986cc7102b-c7e53b3be11b-JavaScript-IU-253.28294.334" />
       </set>
     </attachedChunks>
   </component>
@@ -119,7 +252,28 @@
       <workItem from="1760640723266" duration="11000" />
       <workItem from="1760942614613" duration="5007000" />
       <workItem from="1761278094589" duration="1000000" />
-      <workItem from="1761280234551" duration="3664000" />
+      <workItem from="1761280234551" duration="3694000" />
+      <workItem from="1761900696884" duration="26000" />
+      <workItem from="1761900790919" duration="361000" />
+      <workItem from="1761901231133" duration="2444000" />
+      <workItem from="1761905063355" duration="3000" />
+      <workItem from="1761906129652" duration="4000" />
+      <workItem from="1761910129252" duration="103000" />
+      <workItem from="1761984878824" duration="727000" />
+      <workItem from="1762511654283" duration="3045000" />
+      <workItem from="1762871222726" duration="4061000" />
+      <workItem from="1763048098230" duration="355000" />
+      <workItem from="1763048517165" duration="844000" />
+      <workItem from="1763111055680" duration="215000" />
+      <workItem from="1763113230313" duration="1515000" />
+      <workItem from="1765280056569" duration="533000" />
+      <workItem from="1765280821773" duration="888000" />
+      <workItem from="1765288729179" duration="1152000" />
+      <workItem from="1765290095606" duration="1286000" />
+      <workItem from="1765292459721" duration="23000" />
+      <workItem from="1765295188375" duration="9864000" />
+      <workItem from="1765437169044" duration="3734000" />
+      <workItem from="1765441548448" duration="13010000" />
     </task>
     <task id="LOCAL-00001" summary="push all files to remote">
       <option name="closed" value="true" />
@@ -185,7 +339,87 @@
       <option name="project" value="LOCAL" />
       <updated>1761292235829</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="refract">
+      <option name="closed" value="true" />
+      <created>1761292806083</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1761292806083</updated>
+    </task>
+    <task id="LOCAL-00010" summary="feat: add main GUI Dashboard for Azaala VCS">
+      <option name="closed" value="true" />
+      <created>1762874941469</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1762874941469</updated>
+    </task>
+    <task id="LOCAL-00011" summary="feat: add OverviewPanel to display repository statistics and information">
+      <option name="closed" value="true" />
+      <created>1763111228466</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1763111228466</updated>
+    </task>
+    <task id="LOCAL-00012" summary="feat: add HistoryPanel to display commit history and details">
+      <option name="closed" value="true" />
+      <created>1763113547643</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1763113547643</updated>
+    </task>
+    <task id="LOCAL-00013" summary="feat: add SettingsPanel for managing configuration options">
+      <option name="closed" value="true" />
+      <created>1763113890863</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1763113890863</updated>
+    </task>
+    <task id="LOCAL-00014" summary="feat: enhance GUI with improved theming and layout adjustments">
+      <option name="closed" value="true" />
+      <created>1765302956405</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1765302956405</updated>
+    </task>
+    <task id="LOCAL-00015" summary="feat: implement advanced diff utility with detailed line-by-line comparison">
+      <option name="closed" value="true" />
+      <created>1765437343191</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1765437343191</updated>
+    </task>
+    <task id="LOCAL-00016" summary="feat: enhance repository management and diff functionality with improved dialogs and UI updates">
+      <option name="closed" value="true" />
+      <created>1765437389185</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1765437389185</updated>
+    </task>
+    <task id="LOCAL-00017" summary="feat: add PreferencesDialog and PreferencesManager for comprehensive settings management">
+      <option name="closed" value="true" />
+      <created>1765438062361</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1765438062361</updated>
+    </task>
+    <task id="LOCAL-00018" summary="feat: implement database persistence and repository management with async operations">
+      <option name="closed" value="true" />
+      <created>1765449659693</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1765449659693</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -198,6 +432,28 @@
     <MESSAGE value="add project configuration files for IntelliJ IDEA" />
     <MESSAGE value="update .gitignore to include .idea directory and modify workspace.xml for IntelliJ IDEA configuration" />
     <MESSAGE value="refactor: enhance commit summary and log display;" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor: enhance commit summary and log display;" />
+    <MESSAGE value="refract" />
+    <MESSAGE value="feat: add main GUI Dashboard for Azaala VCS" />
+    <MESSAGE value="feat: add OverviewPanel to display repository statistics and information" />
+    <MESSAGE value="feat: add HistoryPanel to display commit history and details" />
+    <MESSAGE value="feat: add SettingsPanel for managing configuration options" />
+    <MESSAGE value="feat: enhance GUI with improved theming and layout adjustments" />
+    <MESSAGE value="feat: implement advanced diff utility with detailed line-by-line comparison" />
+    <MESSAGE value="feat: enhance repository management and diff functionality with improved dialogs and UI updates" />
+    <MESSAGE value="feat: add PreferencesDialog and PreferencesManager for comprehensive settings management" />
+    <MESSAGE value="feat: implement database persistence and repository management with async operations" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: implement database persistence and repository management with async operations" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+  <component name="github-copilot-workspace">
+    <instructionFileLocations>
+      <option value=".github/instructions" />
+    </instructionFileLocations>
+    <promptFileLocations>
+      <option value=".github/prompts" />
+    </promptFileLocations>
   </component>
 </project>

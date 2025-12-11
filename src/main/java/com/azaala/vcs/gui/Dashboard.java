@@ -940,12 +940,32 @@ public class Dashboard extends JFrame {
                     new com.azaala.vcs.persistence.dao.RepositoryDAO();
                 com.azaala.vcs.persistence.models.RepositoryEntity repoEntity =
                     repoDAO.findByPath(path);
+
                 if (repoEntity != null) {
+                    // Repository exists in database
                     repository.setRepoId(repoEntity.getRepoId());
                     System.out.println("✓ Repository ID loaded from database: " + repoEntity.getRepoId());
+                } else {
+                    // Repository doesn't exist in database - register it now
+                    System.out.println("⚠ Repository not found in database. Registering now...");
+                    com.azaala.vcs.persistence.models.RepositoryEntity newRepo =
+                        new com.azaala.vcs.persistence.models.RepositoryEntity();
+                    newRepo.setRepoName(repository.getName());
+                    newRepo.setRepoPath(path);
+                    newRepo.setCreatedAt(java.time.LocalDateTime.now());
+                    newRepo.setLastCommitAt(java.time.LocalDateTime.now());
+
+                    Long repoId = repoDAO.create(newRepo);
+                    if (repoId != null) {
+                        repository.setRepoId(repoId);
+                        System.out.println("✓ Repository registered in database with ID: " + repoId);
+                    } else {
+                        System.out.println("⚠ Failed to register repository in database");
+                    }
                 }
             } catch (Exception e) {
-                System.out.println("Note: Could not load repository ID from database: " + e.getMessage());
+                System.out.println("⚠ Database error: " + e.getMessage());
+                System.out.println("Continuing without database integration for this session");
             }
 
             // Save to quick access list
@@ -978,12 +998,168 @@ public class Dashboard extends JFrame {
     }
 
     private void showAboutDialog() {
-        JOptionPane.showMessageDialog(this,
-            "Azaala VCS - Version 1.0.0\n" +
-            "A lightweight version control system\n" +
-            "© 2025",
-            "About Azaala VCS",
-            JOptionPane.INFORMATION_MESSAGE);
+        String aboutText =
+            "╔═══════════════════════════════════════════════════════════╗\n" +
+            "║          AZAALA VCS - Version 1.0.0              ║\n" +
+            "║     Lightweight Version Control System           ║\n" +
+            "║          © 2025 - All Rights Reserved            ║\n" +
+            "╚═══════════════════════════════════════════════════════════╝\n\n" +
+
+            "📋 SYSTEM INFORMATION:\n" +
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+            "• Application: Azaala Version Control System\n" +
+            "• Version: 1.0.0\n" +
+            "• Java Version: " + System.getProperty("java.version") + "\n" +
+            "• Operating System: " + System.getProperty("os.name") + "\n" +
+            "• Architecture: " + System.getProperty("os.arch") + "\n\n" +
+
+            "🏗️  ARCHITECTURE:\n" +
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+            "• Frontend: Java Swing GUI (Modern, Responsive)\n" +
+            "• Backend: Pure Java VCS Engine\n" +
+            "• Database: MySQL 8.0 (HikariCP Connection Pool)\n" +
+            "• Threading: SwingWorker (Non-blocking Operations)\n" +
+            "• Storage: HYBRID (Database + File System)\n\n" +
+
+            "💾 HYBRID STORAGE APPROACH:\n" +
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+            "DATABASE STORES:              FILESYSTEM STORES:\n" +
+            "✓ Repository metadata        ✓ File contents\n" +
+            "✓ Commit records             ✓ Commit snapshots\n" +
+            "✓ Staging area               ✓ Working directory\n" +
+            "✓ File references            ✓ Index files\n" +
+            "✓ Activity/Audit logs        ✓ Configuration\n\n" +
+
+            "✨ KEY FEATURES:\n" +
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+            "✓ Initialize repositories\n" +
+            "✓ Stage files (single & batch operations)\n" +
+            "✓ Create commits with messages\n" +
+            "✓ View complete commit history\n" +
+            "✓ Compare any two commits (Diff)\n" +
+            "✓ Track file changes and activity\n" +
+            "✓ Support multiple repositories\n" +
+            "✓ Automatic database initialization\n\n" +
+
+            "🔄 SYNCHRONIZATION:\n" +
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+            "The hybrid approach ensures:\n" +
+            "• Database provides fast searches & relationships\n" +
+            "• Filesystem provides efficient storage\n" +
+            "• Both stay synchronized during operations\n" +
+            "• Graceful fallback if database unavailable\n" +
+            "• Audit trail in database for compliance\n\n" +
+
+            "🔧 COMPONENTS:\n" +
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+            "Core Modules:\n" +
+            "  • VCS Engine - Repository & commit management\n" +
+            "  • FileHandler - File operations & copying\n" +
+            "  • DiffUtil - Change detection & comparison\n" +
+            "  • DatabaseManager - MySQL connectivity\n\n" +
+
+            "GUI Panels:\n" +
+            "  • Overview - Repository information\n" +
+            "  • Status - Staged & tracked files\n" +
+            "  • History - Commit log viewer\n" +
+            "  • Diff - Commit comparison\n" +
+            "  • Settings - Configuration\n\n" +
+
+            "📊 DATABASE TABLES:\n" +
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+            "• repositories - Repository metadata\n" +
+            "• commits - Commit history\n" +
+            "• staged_files - Current staging area\n" +
+            "• commit_files - Files in each commit\n" +
+            "• activity_logs - Audit trail\n\n" +
+
+            "🚀 PERFORMANCE:\n" +
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+            "• Connection Pool: 10 max connections\n" +
+            "• Query Optimization: Indexed lookups\n" +
+            "• Async Operations: Non-blocking UI\n" +
+            "• Efficient Storage: Hybrid approach\n\n" +
+
+            "📝 FOR MORE INFORMATION:\n" +
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+            "Visit: https://github.com/abuba-akar0/AzaalaVCS\n" +
+            "Docs: See README.md in project root\n";
+
+        // Create styled text area with larger font
+        JTextArea textArea = new JTextArea(aboutText);
+        textArea.setEditable(false);
+        textArea.setFont(new java.awt.Font("Monospaced", java.awt.Font.PLAIN, 22));
+        textArea.setBackground(new Color(245, 245, 250)); // Light background
+        textArea.setForeground(new Color(30, 30, 40)); // Dark text
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        textArea.setMargin(new java.awt.Insets(15, 15, 15, 15));
+        textArea.setCaretPosition(0);
+
+        // Create scrollable panel - NO fixed size, let content determine width
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.getViewport().setBackground(new Color(245, 245, 250));
+
+        // Create custom dialog
+        JDialog aboutDialog = new JDialog(this, "About Azaala VCS", true);
+        aboutDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        aboutDialog.setResizable(true);
+
+        // Main panel with colored background
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BorderLayout());
+        mainPanel.setBackground(new Color(245, 245, 250));
+
+        // Header panel with gradient-like appearance
+        JPanel headerPanel = new JPanel();
+        headerPanel.setBackground(new Color(41, 128, 185)); // Blue
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+        headerPanel.setPreferredSize(new java.awt.Dimension(800, 60)); // Wide to match text
+
+        JLabel headerLabel = new JLabel("Azaala VCS - About");
+        headerLabel.setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 24));
+        headerLabel.setForeground(Color.WHITE);
+        headerPanel.add(headerLabel);
+
+        // Content panel
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BorderLayout());
+        contentPanel.setBackground(new Color(245, 245, 250));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        contentPanel.add(scrollPane, BorderLayout.CENTER);
+
+        // Button panel
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setBackground(new Color(240, 240, 245));
+        buttonPanel.setBorder(BorderFactory.createMatteBorder(1, 0, 0, 0, new Color(200, 200, 210)));
+        buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT, 10, 10));
+
+        JButton closeButton = new JButton("Close");
+        closeButton.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 12));
+        closeButton.setPreferredSize(new java.awt.Dimension(100, 35));
+        closeButton.setBackground(new Color(41, 128, 185));
+        closeButton.setForeground(Color.BLACK);
+        closeButton.setFocusPainted(false);
+        closeButton.setBorder(BorderFactory.createEmptyBorder(5, 15, 5, 15));
+        closeButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        closeButton.addActionListener(e -> aboutDialog.dispose());
+        buttonPanel.add(closeButton);
+
+        // Assemble dialog
+        mainPanel.add(headerPanel, BorderLayout.NORTH);
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
+
+        aboutDialog.add(mainPanel);
+
+        // Set optimal size - wide to match text content
+        aboutDialog.setSize(800, 700);
+
+        // Center on screen
+        aboutDialog.setLocationRelativeTo(this);
+
+        aboutDialog.setVisible(true);
     }
 
     private void refreshAllTabs() {
@@ -1003,6 +1179,7 @@ public class Dashboard extends JFrame {
             repositoryLabel.setText("Repository: Not initialized");
         }
     }
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Dashboard());

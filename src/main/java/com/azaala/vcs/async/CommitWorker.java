@@ -210,8 +210,131 @@ public class CommitWorker extends BaseVCSWorker<String> {
 
     @Override
     protected void onError(Exception exception) {
-        System.err.println("✗ Commit error: " + exception.getMessage());
-        LOGGER.severe("Commit error: " + exception.getMessage());
+        String errorMessage = exception.getMessage();
+
+        // Log to file for debugging (not shown to user)
+        LOGGER.severe("Commit error: " + errorMessage);
+
+        // Show ONLY user-friendly error dialog (no technical console output)
+        showErrorDialog(errorMessage);
+    }
+
+    /**
+     * Display user-friendly error dialog based on error type
+     */
+    private void showErrorDialog(String errorMessage) {
+        try {
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                String title = "Commit Failed";
+                String userMessage = buildUserFriendlyMessage(errorMessage);
+
+                javax.swing.JOptionPane.showMessageDialog(
+                    null,
+                    userMessage,
+                    title,
+                    javax.swing.JOptionPane.ERROR_MESSAGE
+                );
+            });
+        } catch (Exception e) {
+            System.err.println("Could not display error dialog: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Build user-friendly error message based on error type
+     */
+    private String buildUserFriendlyMessage(String errorMessage) {
+        if (errorMessage == null) {
+            errorMessage = "Unknown error occurred";
+        }
+
+        String userMessage = "";
+
+        // Handle specific error types
+        if (errorMessage.contains("No files staged")) {
+            userMessage = "❌ No Files Staged for Commit\n\n" +
+                "You need to stage files before committing.\n\n" +
+                "How to fix this:\n" +
+                "1. Click the 'Add File' button to add individual files\n" +
+                "2. Or click 'Add All Files' to stage all files in your repository\n" +
+                "3. Then click 'Commit' again\n\n" +
+                "📍 Tip: Use the Status tab to see which files are staged";
+
+        } else if (errorMessage.contains("Repository ID not found")) {
+            userMessage = "❌ Repository Not Properly Initialized\n\n" +
+                "The repository is missing required information.\n\n" +
+                "How to fix this:\n" +
+                "1. Go to File → New Repository (or Open Repository)\n" +
+                "2. Initialize or reload the repository\n" +
+                "3. Try committing again\n\n" +
+                "📍 Tip: Make sure your repository is properly initialized";
+
+        } else if (errorMessage.contains("commit message") || errorMessage.contains("Message")) {
+            userMessage = "❌ Invalid Commit Message\n\n" +
+                "Your commit message is invalid.\n\n" +
+                "How to fix this:\n" +
+                "1. Enter a meaningful commit message (at least 1 character)\n" +
+                "2. Describe what changes you made\n" +
+                "3. Try committing again\n\n" +
+                "📍 Example: 'Fixed login bug' or 'Updated user interface'";
+
+        } else if (errorMessage.contains("Failed to copy file")) {
+            userMessage = "❌ File Copy Error\n\n" +
+                "Could not copy files during commit operation.\n\n" +
+                "Possible causes:\n" +
+                "• File permissions denied\n" +
+                "• File is locked or in use\n" +
+                "• Disk space is full\n" +
+                "• File path is too long\n\n" +
+                "How to fix this:\n" +
+                "1. Close any applications using these files\n" +
+                "2. Check file permissions\n" +
+                "3. Ensure sufficient disk space\n" +
+                "4. Try committing again";
+
+        } else if (errorMessage.contains("database") || errorMessage.contains("Database")) {
+            userMessage = "❌ Database Error\n\n" +
+                "Could not save commit to database.\n\n" +
+                "Possible causes:\n" +
+                "• Database connection lost\n" +
+                "• Database is locked\n" +
+                "• Database file corrupted\n\n" +
+                "How to fix this:\n" +
+                "1. Restart the application\n" +
+                "2. Check your database connection\n" +
+                "3. If problem persists, contact support\n\n" +
+                "📍 Error: " + errorMessage;
+
+        } else if (errorMessage.contains("Failed to create commit")) {
+            userMessage = "❌ Commit Creation Failed\n\n" +
+                "The commit could not be created in the version control system.\n\n" +
+                "Possible causes:\n" +
+                "• Invalid file paths\n" +
+                "• Files were deleted after staging\n" +
+                "• System disk full\n" +
+                "• Permission denied\n\n" +
+                "How to fix this:\n" +
+                "1. Verify all staged files still exist\n" +
+                "2. Check file permissions\n" +
+                "3. Ensure sufficient disk space\n" +
+                "4. Try again with fewer files\n\n" +
+                "📍 Technical: " + errorMessage;
+
+        } else {
+            // Generic error message with technical details
+            userMessage = "❌ Commit Operation Failed\n\n" +
+                "An error occurred while creating the commit.\n\n" +
+                "Error Details:\n" +
+                errorMessage + "\n\n" +
+                "What to try:\n" +
+                "1. Check the Status tab for file information\n" +
+                "2. Make sure at least one file is staged\n" +
+                "3. Enter a valid commit message\n" +
+                "4. Try again\n\n" +
+                "If the problem persists, check the application logs for more details";
+        }
+
+        return userMessage;
     }
 }
 

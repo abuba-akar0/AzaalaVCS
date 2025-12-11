@@ -139,6 +139,13 @@ public class VCS {
      * @return true if the file was successfully added, false otherwise
      * @throws IllegalArgumentException if filePath is null or empty
      */
+    /**
+     * Adds a single file OR directory to the staging area.
+     * If a directory is provided, all files within it are added recursively.
+     *
+     * @param filePath Path to the file or directory to add
+     * @return true if successful, false otherwise
+     */
     public boolean addFile(String filePath) {
         if (repository == null) {
             System.err.println("Repository not initialized. Run 'init' first.");
@@ -156,37 +163,59 @@ public class VCS {
             return false;
         }
 
-        // Check if file is already staged
-        if (repository.isFileStaged(trimmedPath)) {
-            System.out.println("ℹ File already added to staging area: " + trimmedPath);
-            return true;
-        }
-
+        // Normalize the path to absolute canonical form
         File file = new File(trimmedPath);
-
-        // Check if file exists and is readable
-        if (!file.exists()) {
-            System.err.println("File does not exist: " + trimmedPath);
-            return false;
+        try {
+            trimmedPath = file.getCanonicalPath();
+        } catch (Exception e) {
+            // If canonical path fails, use absolute path
+            trimmedPath = file.getAbsolutePath();
         }
 
-        if (!file.isFile()) {
-            System.err.println("Path is not a file: " + trimmedPath);
+        file = new File(trimmedPath);
+
+        // Check if path exists and is readable
+        if (!file.exists()) {
+            System.err.println("Path does not exist: " + trimmedPath);
             return false;
         }
 
         if (!file.canRead()) {
-            System.err.println("Cannot read file: " + trimmedPath);
+            System.err.println("Cannot read path: " + trimmedPath);
             return false;
         }
 
-        // Security check - ensure file is within repository or parent directory
+        // Security check - ensure path is within repository or parent directory
         File repoRoot = new File(repository.getPath());
-        // Modified to allow files from parent directories to be added
         if (!Utils.isFileWithinDirectory(file, repoRoot) &&
             !Utils.isFileWithinDirectory(file, repoRoot.getParentFile())) {
-            System.err.println("File is outside repository boundaries: " + trimmedPath);
+            System.err.println("Path is outside repository boundaries: " + trimmedPath);
             return false;
+        }
+
+        // Handle directories - add all files recursively
+        if (file.isDirectory()) {
+            System.out.println("Adding directory and all files within: " + trimmedPath);
+            return addDirectoryRecursively(file);
+        }
+
+        // Handle single files
+        if (file.isFile()) {
+            return addSingleFile(trimmedPath, file, repoRoot);
+        }
+
+        System.err.println("Path is neither a file nor a directory: " + trimmedPath);
+        return false;
+    }
+
+    /**
+     * Adds a single file to staging.
+     */
+    private boolean addSingleFile(String trimmedPath, File file, File repoRoot) {
+        // Check if already staged
+        if (repository.isFileStaged(trimmedPath)) {
+            System.out.println("ℹ File already added to staging area: " + trimmedPath);
+            return true;
         }
 
         try {
@@ -204,12 +233,99 @@ public class VCS {
             }
 
             String relativePath = Utils.getRelativePath(file, repoRoot);
-            System.out.println("File added to staging area: " + relativePath);
+            System.out.println("✓ File added to staging area: " + relativePath);
             return true;
 
         } catch (Exception e) {
             System.err.println("Error adding file '" + trimmedPath + "': " + e.getMessage());
             return false;
+        }
+    }
+
+    /**
+     * Recursively adds all files from a directory.
+     */
+    private boolean addDirectoryRecursively(File directory) {
+        try {
+            List<File> allFiles = new ArrayList<>();
+            collectFilesRecursively(directory, allFiles);
+
+            if (allFiles.isEmpty()) {
+                System.out.println("ℹ No files found in directory: " + directory.getPath());
+                return true;
+            }
+
+            int addedCount = 0;
+            int skippedCount = 0;
+            File repoRoot = new File(repository.getPath());
+            String indexPath = repository.getPath() + File.separator + INDEX_DIR;
+
+            System.out.println("Found " + allFiles.size() + " files to add...");
+
+            for (File file : allFiles) {
+                String filePath = file.getAbsolutePath();
+
+                // Check if already staged
+                if (repository.isFileStaged(filePath)) {
+                    System.out.println("  ⓘ Skipped (already staged): " + file.getName());
+                    skippedCount++;
+                    continue;
+                }
+
+                try {
+                    // Copy file to index with structure
+                    if (fileHandler.copyToIndexWithStructure(filePath, indexPath, repository.getPath())) {
+                        // Stage the file
+                        if (repository.stageFile(filePath)) {
+                            addedCount++;
+                            String relativePath = Utils.getRelativePath(file, repoRoot);
+                            System.out.println("  ✓ Added: " + relativePath);
+                        } else {
+                            System.err.println("  ✗ Failed to stage: " + file.getName());
+                        }
+                    } else {
+                        System.err.println("  ✗ Failed to copy: " + file.getName());
+                    }
+                } catch (Exception e) {
+                    System.err.println("  ✗ Error adding " + file.getName() + ": " + e.getMessage());
+                }
+            }
+
+            System.out.println("✓ Directory addition complete!");
+            System.out.println("  Added: " + addedCount + " files");
+            if (skippedCount > 0) {
+                System.out.println("  Skipped: " + skippedCount + " files (already staged)");
+            }
+
+            return addedCount > 0 || allFiles.isEmpty();
+
+        } catch (Exception e) {
+            System.err.println("Error adding directory: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Recursively collects all files from a directory.
+     */
+    private void collectFilesRecursively(File directory, List<File> files) {
+        File[] contents = directory.listFiles();
+        if (contents == null) {
+            return;
+        }
+
+        for (File file : contents) {
+            // Skip hidden files and VCS directories
+            if (file.getName().startsWith(".")) {
+                continue;
+            }
+
+            if (file.isFile() && file.canRead()) {
+                files.add(file);
+            } else if (file.isDirectory()) {
+                collectFilesRecursively(file, files);
+            }
         }
     }
 

@@ -107,7 +107,88 @@ public class RepositoryInitWorker extends BaseVCSWorker<Boolean> {
 
     @Override
     protected void onError(Exception exception) {
-        System.err.println("✗ Repository initialization error: " + exception.getMessage());
-        exception.printStackTrace();
+        String errorMessage = exception.getMessage();
+
+        // Show ONLY user-friendly error dialog (no technical console output)
+        showErrorDialog(errorMessage);
+    }
+
+    /**
+     * Display user-friendly error dialog for repository initialization
+     */
+    private void showErrorDialog(String errorMessage) {
+        try {
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                String title = "Repository Initialization Failed";
+                String userMessage = buildUserFriendlyMessage(errorMessage);
+
+                javax.swing.JOptionPane.showMessageDialog(
+                    null,
+                    userMessage,
+                    title,
+                    javax.swing.JOptionPane.ERROR_MESSAGE
+                );
+            });
+        } catch (Exception e) {
+            System.err.println("Could not display error dialog: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Build user-friendly message for repository initialization errors
+     */
+    private String buildUserFriendlyMessage(String errorMessage) {
+        if (errorMessage == null) {
+            errorMessage = "Unknown error occurred";
+        }
+
+        String userMessage = "";
+
+        if (errorMessage.contains("Permission denied") || errorMessage.contains("Permission")) {
+            userMessage = "❌ Permission Denied\n\n" +
+                "You don't have permission to create a repository here.\n\n" +
+                "How to fix this:\n" +
+                "1. Choose a different directory\n" +
+                "2. Or run with administrator privileges\n" +
+                "3. Check folder permissions\n\n" +
+                "📍 Try selecting a folder in Documents or Desktop";
+
+        } else if (errorMessage.contains("already exists")) {
+            userMessage = "❌ Repository Already Exists\n\n" +
+                "This directory is already a VCS repository.\n\n" +
+                "Options:\n" +
+                "1. Choose a different empty directory\n" +
+                "2. Or open this repository\n" +
+                "3. Delete the existing repository if you want to start fresh";
+
+        } else if (errorMessage.contains("Path does not exist") || errorMessage.contains("not found")) {
+            userMessage = "❌ Path Not Found\n\n" +
+                "The directory you selected doesn't exist.\n\n" +
+                "How to fix this:\n" +
+                "1. Create the directory first\n" +
+                "2. Or select an existing directory\n" +
+                "3. Try again";
+
+        } else if (errorMessage.contains("Disk full") || errorMessage.contains("No space")) {
+            userMessage = "❌ Disk Space Full\n\n" +
+                "Your disk doesn't have enough space.\n\n" +
+                "What to do:\n" +
+                "1. Free up some disk space\n" +
+                "2. Delete unnecessary files\n" +
+                "3. Try again";
+
+        } else {
+            userMessage = "❌ Repository Initialization Failed\n\n" +
+                "Could not initialize the repository.\n\n" +
+                "Error Details:\n" +
+                errorMessage + "\n\n" +
+                "What to try:\n" +
+                "1. Select a different directory\n" +
+                "2. Check folder permissions\n" +
+                "3. Make sure the path is valid\n" +
+                "4. Ensure sufficient disk space";
+        }
+
+        return userMessage;
     }
 }

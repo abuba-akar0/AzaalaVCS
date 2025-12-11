@@ -71,8 +71,10 @@ public class StatusLoadWorker extends BaseVCSWorker<List<String>> {
 
     @Override
     protected void onError(Exception exception) {
-        System.err.println("✗ Status loading error: " + exception.getMessage());
-        exception.printStackTrace();
+        String errorMessage = exception.getMessage();
+
+        // Silent failure - background task, log only for debugging
+        // No console output or dialog shown to user
     }
 
     private String formatFileSize(long bytes) {

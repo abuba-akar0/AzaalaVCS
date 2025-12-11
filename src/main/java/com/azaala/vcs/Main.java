@@ -85,19 +85,187 @@ public class Main {
      * @param args Command line arguments
      */
     private static void executeCommand(String[] args) {
+        if (args.length == 0) {
+            printHelp();
+            return;
+        }
+
         try {
             String command = args[0].toLowerCase();
             String[] commandArgs = new String[args.length - 1];
-            System.arraycopy(args, 1, commandArgs, 0, args.length - 1);
+            if (args.length > 1) {
+                System.arraycopy(args, 1, commandArgs, 0, args.length - 1);
+            }
 
-            // Use commandHandler to execute commands instead of duplicating logic
-            if (!commandHandler.executeCommand(command, commandArgs)) {
-                System.err.println("Command failed: " + command);
-                System.err.println("Use -h or --help for help information");
+            switch (command) {
+                case "init":
+                    handleInitCommand(commandArgs);
+                    break;
+                case "add":
+                    handleAddCommand(commandArgs);
+                    break;
+                case "add-all":
+                case "addall":
+                    handleAddAllCommand(commandArgs);
+                    break;
+                case "commit":
+                    handleCommitCommand(commandArgs);
+                    break;
+                case "status":
+                case "st":
+                    handleStatusCommand(commandArgs);
+                    break;
+                case "log":
+                case "history":
+                    handleLogCommand(commandArgs);
+                    break;
+                case "diff":
+                    handleDiffCommand(commandArgs);
+                    break;
+                case "activity":
+                case "summary":
+                    handleActivityCommand(commandArgs);
+                    break;
+                case "help":
+                case "-h":
+                case "--help":
+                    printHelp();
+                    break;
+                case "version":
+                case "-v":
+                case "--version":
+                    printVersion();
+                    break;
+                default:
+                    System.err.println("Unknown command: " + command);
+                    System.err.println("Use 'help' to see available commands");
+                    break;
             }
         } catch (Exception e) {
             System.err.println("Error executing command: " + e.getMessage());
+            e.printStackTrace();
         }
+    }
+
+    /**
+     * Handles init command from console arguments.
+     */
+    private static void handleInitCommand(String[] args) {
+        String path = (args.length > 0) ? args[0] : System.getProperty("user.dir");
+        System.out.println("Initializing repository at: " + path);
+        executeInitCommand(path);
+    }
+
+    /**
+     * Handles add command from console arguments.
+     */
+    private static void handleAddCommand(String[] args) {
+        if (args.length == 0) {
+            System.err.println("Usage: add <file-path>");
+            System.err.println("Example: add /path/to/file.txt");
+            return;
+        }
+        String filePath = args[0];
+        System.out.println("Adding file: " + filePath);
+        executeAddCommand(filePath);
+    }
+
+    /**
+     * Handles add-all command from console arguments.
+     */
+    private static void handleAddAllCommand(String[] args) {
+        System.out.println("Adding all files from repository...");
+        try {
+            VCS vcs = commandHandler.getVCS();
+            int count = vcs.addAllFilesFromRepo();
+            System.out.println("✓ Successfully added " + count + " files to staging area!");
+        } catch (Exception e) {
+            System.out.println("✗ Error adding all files: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Handles commit command from console arguments.
+     */
+    private static void handleCommitCommand(String[] args) {
+        if (args.length == 0) {
+            System.err.println("Usage: commit \"<commit-message>\"");
+            System.err.println("Example: commit \"Initial commit\"");
+            return;
+        }
+        String message = args[0];
+        System.out.println("Committing with message: " + message);
+        executeCommitCommand(message);
+    }
+
+    /**
+     * Handles status command from console arguments.
+     */
+    private static void handleStatusCommand(String[] args) {
+        System.out.println("Retrieving repository status...");
+        System.out.println("========================================");
+        executeStatusCommand();
+        System.out.println("========================================");
+    }
+
+    /**
+     * Handles log command from console arguments.
+     */
+    private static void handleLogCommand(String[] args) {
+        System.out.println("Retrieving commit history...");
+        System.out.println("========================================");
+        executeLogCommand();
+        System.out.println("========================================");
+    }
+
+    /**
+     * Handles diff command from console arguments.
+     */
+    private static void handleDiffCommand(String[] args) {
+        if (args.length < 2) {
+            System.err.println("Usage: diff <commit-id-1> <commit-id-2>");
+            System.err.println("Example: diff abc123 def456");
+            System.err.println("");
+            System.err.println("Use 'log' to see available commit IDs");
+            return;
+        }
+        String commitId1 = args[0];
+        String commitId2 = args[1];
+        System.out.println("Comparing commits: " + commitId1 + " vs " + commitId2);
+        System.out.println("========================================");
+        executeDiffCommand(commitId1, commitId2);
+        System.out.println("========================================");
+    }
+
+    /**
+     * Handles activity command from console arguments.
+     */
+    private static void handleActivityCommand(String[] args) {
+        int limit = 5; // default
+        if (args.length > 0) {
+            try {
+                limit = Integer.parseInt(args[0]);
+                if (limit <= 0) {
+                    System.out.println("Using default limit of 5 commits.");
+                    limit = 5;
+                }
+            } catch (NumberFormatException e) {
+                System.err.println("Invalid number: " + args[0]);
+                System.err.println("Using default limit of 5 commits.");
+            }
+        }
+
+        System.out.println("Generating activity summary (last " + limit + " commits)...");
+        System.out.println("========================================");
+        try {
+            String summary = commandHandler.getVCS().getActivitySummary(limit);
+            System.out.println(summary);
+        } catch (Exception e) {
+            System.out.println("✗ Error generating activity summary: " + e.getMessage());
+            e.printStackTrace();
+        }
+        System.out.println("========================================");
     }
 
     /**
@@ -458,39 +626,146 @@ public class Main {
      * Prints help information for using the application.
      */
     private static void printHelp() {
-        System.out.println(APP_NAME + " v" + VERSION + " - Simple Version Control System");
-        System.out.println("Usage: java -jar azaala-vcs.jar [command] [options]");
+        System.out.println("\n╔════════════════════════════════════════════════════════════════╗");
+        System.out.println("║         " + APP_NAME + " v" + VERSION + " - Simple Version Control System              ║");
+        System.out.println("╚════════════════════════════════════════════════════════════════╝");
         System.out.println();
-        System.out.println("Commands:");
-        System.out.println("  init [path]              Initialize a new repository (default: current directory)");
-        System.out.println("  add <file-path>          Add file to staging area");
-        System.out.println("  commit <message>         Commit staged changes with message");
+        System.out.println("USAGE: java -jar azaala-vcs.jar [command] [options]");
+        System.out.println();
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("COMMANDS:");
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println();
+
+        System.out.println("📁 REPOSITORY MANAGEMENT:");
+        System.out.println("  init [path]              Initialize a new repository");
+        System.out.println("                           Default: current directory");
+        System.out.println("                           Example: init /path/to/repo");
+        System.out.println();
+
+        System.out.println("➕ FILE STAGING:");
+        System.out.println("  add <file-path>          Add single file to staging area");
+        System.out.println("                           Example: add myfile.txt");
+        System.out.println();
+        System.out.println("  add-all                  Add all files recursively to staging");
+        System.out.println("  addall                   (Same as add-all)");
+        System.out.println("                           Example: add-all");
+        System.out.println();
+
+        System.out.println("✓ COMMITTING:");
+        System.out.println("  commit \"<message>\"       Commit staged changes");
+        System.out.println("                           Example: commit \"Initial commit\"");
+        System.out.println();
+
+        System.out.println("📊 VIEWING INFORMATION:");
         System.out.println("  status                   Show repository status");
+        System.out.println("  st                       (Short for status)");
+        System.out.println("                           Example: status");
+        System.out.println();
         System.out.println("  log                      Display commit history");
-        System.out.println("  diff <id1> <id2>         Show differences between two commits");
+        System.out.println("  history                  (Same as log)");
+        System.out.println("                           Example: log");
         System.out.println();
-        System.out.println("Options:");
-        System.out.println("  -h, --help               Show this help message");
-        System.out.println("  -v, --version            Show version information");
+
+        System.out.println("⇄ COMPARISON:");
+        System.out.println("  diff <id1> <id2>         Show differences between commits");
+        System.out.println("                           Example: diff abc123 def456");
+        System.out.println("                           Use 'log' to see commit IDs");
         System.out.println();
-        System.out.println("Interactive Mode:");
-        System.out.println("  Run without arguments to enter interactive menu mode");
+
+        System.out.println("📈 ACTIVITY:");
+        System.out.println("  activity [limit]         Show activity summary");
+        System.out.println("  summary [limit]          (Same as activity)");
+        System.out.println("                           Default limit: 5 commits");
+        System.out.println("                           Example: activity 10");
         System.out.println();
-        System.out.println("Examples:");
-        System.out.println("  java -jar azaala-vcs.jar init");
-        System.out.println("  java -jar azaala-vcs.jar add myfile.txt");
-        System.out.println("  java -jar azaala-vcs.jar commit \"Initial commit\"");
-        System.out.println("  java -jar azaala-vcs.jar log");
+
+        System.out.println("ℹ️  INFORMATION:");
+        System.out.println("  help                     Show this help message");
+        System.out.println("  -h, --help               (Same as help)");
         System.out.println();
-        System.out.println("For more information, visit: https://github.com/azaala/vcs");
+        System.out.println("  version                  Show version information");
+        System.out.println("  -v, --version            (Same as version)");
+        System.out.println();
+
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("INTERACTIVE MODE:");
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println();
+        System.out.println("Run without arguments to enter interactive menu mode:");
+        System.out.println("  java -jar azaala-vcs.jar");
+        System.out.println();
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("EXAMPLES:");
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println();
+        System.out.println("1. Initialize a repository:");
+        System.out.println("   java -jar azaala-vcs.jar init");
+        System.out.println();
+        System.out.println("2. Add a single file:");
+        System.out.println("   java -jar azaala-vcs.jar add myfile.txt");
+        System.out.println();
+        System.out.println("3. Add all files:");
+        System.out.println("   java -jar azaala-vcs.jar add-all");
+        System.out.println();
+        System.out.println("4. Commit changes:");
+        System.out.println("   java -jar azaala-vcs.jar commit \"Initial commit\"");
+        System.out.println();
+        System.out.println("5. View status:");
+        System.out.println("   java -jar azaala-vcs.jar status");
+        System.out.println();
+        System.out.println("6. View commit history:");
+        System.out.println("   java -jar azaala-vcs.jar log");
+        System.out.println();
+        System.out.println("7. Compare two commits:");
+        System.out.println("   java -jar azaala-vcs.jar diff abc123def def456ghi");
+        System.out.println();
+        System.out.println("8. Show activity summary:");
+        System.out.println("   java -jar azaala-vcs.jar activity 10");
+        System.out.println();
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println("FEATURES:");
+        System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        System.out.println();
+        System.out.println("✓ Initialize repositories");
+        System.out.println("✓ Stage files (single & batch)");
+        System.out.println("✓ Create commits with messages");
+        System.out.println("✓ View complete commit history");
+        System.out.println("✓ Compare any two commits");
+        System.out.println("✓ Track file changes and activity");
+        System.out.println("✓ Support multiple repositories");
+        System.out.println("✓ Hybrid storage (Database + Filesystem)");
+        System.out.println();
+        System.out.println("For more information, visit: https://github.com/abuba-akar0/AzaalaVCS");
+        System.out.println();
     }
 
     /**
      * Prints version information.
      */
     private static void printVersion() {
-        System.out.println(APP_NAME + " version " + VERSION);
-        System.out.println("Copyright (c) 2024 Azaala. All rights reserved.");
-        System.out.println("Built with Java " + System.getProperty("java.version"));
+        System.out.println();
+        System.out.println("╔════════════════════════════════════════════════════════════════╗");
+        System.out.println("║              " + APP_NAME + " - Version Information                   ║");
+        System.out.println("╚════════════════════════════════════════════════════════════════╝");
+        System.out.println();
+        System.out.println("Application:      " + APP_NAME);
+        System.out.println("Version:          " + VERSION);
+        System.out.println("Release Date:     2025-12-11");
+        System.out.println("Java Version:     " + System.getProperty("java.version"));
+        System.out.println("Operating System: " + System.getProperty("os.name") + " " + System.getProperty("os.version"));
+        System.out.println("Architecture:     " + System.getProperty("os.arch"));
+        System.out.println();
+        System.out.println("Description:      Lightweight Version Control System");
+        System.out.println("Features:         Hybrid Storage (Database + Filesystem)");
+        System.out.println("                  Async Operations with Threading");
+        System.out.println("                  Complete Diff Algorithm");
+        System.out.println("                  Activity Tracking");
+        System.out.println();
+        System.out.println("Copyright © 2025 Azaala. All rights reserved.");
+        System.out.println("Built with Java and Swing Framework");
+        System.out.println();
+        System.out.println("Repository: https://github.com/abuba-akar0/AzaalaVCS");
+        System.out.println();
     }
 }

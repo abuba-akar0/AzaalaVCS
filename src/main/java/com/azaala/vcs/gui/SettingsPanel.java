@@ -205,11 +205,11 @@ public class SettingsPanel extends JPanel {
             if (Files.exists(settingsPath)) {
                 try (FileReader reader = new FileReader(settingsPath.toFile())) {
                     settings.load(reader);
-                    System.out.println("Settings loaded from: " + settingsPath);
+                    System.out.println("[DEBUG] Settings loaded from: " + settingsPath);
                 }
             } else {
-                // Settings file doesn't exist yet - use defaults
-                System.out.println("Settings file not found at: " + settingsPath + " (using defaults)");
+                // Settings file doesn't exist yet - this is normal for new repositories
+                System.out.println("[DEBUG] Settings file not found - using defaults");
             }
 
             // Apply loaded settings to UI (with defaults if not found)

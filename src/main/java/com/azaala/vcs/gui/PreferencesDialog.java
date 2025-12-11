@@ -14,7 +14,6 @@ public class PreferencesDialog extends JDialog {
     private JTabbedPane tabbedPane;
 
     // General settings
-    private JComboBox<String> themeCombo;
     private JCheckBox enableLoggingCheckBox;
     private JCheckBox autoRefreshCheckBox;
     private JSpinner autoRefreshIntervalSpinner;
@@ -112,10 +111,6 @@ public class PreferencesDialog extends JDialog {
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(UITheme.BACKGROUND_COLOR);
         panel.setBorder(new EmptyBorder(15, 15, 15, 15));
-
-        panel.add(createSectionLabel("Appearance"));
-        panel.add(createFormRow("UI Theme:", createThemeCombo()));
-        panel.add(Box.createVerticalStrut(10));
 
         panel.add(createSectionLabel("Behavior"));
         enableLoggingCheckBox = new JCheckBox("Enable detailed logging");
@@ -256,14 +251,7 @@ public class PreferencesDialog extends JDialog {
         return row;
     }
 
-    private JComboBox<String> createThemeCombo() {
-        themeCombo = new JComboBox<>(new String[]{"System Default", "Light", "Dark"});
-        UITheme.styleComboBox(themeCombo);
-        return themeCombo;
-    }
-
     private void loadPreferencesFromManager() {
-        themeCombo.setSelectedItem(prefManager.getString(PreferencesManager.THEME, "System Default"));
         enableLoggingCheckBox.setSelected(prefManager.getBoolean(PreferencesManager.ENABLE_LOGGING, false));
         autoRefreshCheckBox.setSelected(prefManager.getBoolean(PreferencesManager.AUTO_REFRESH, true));
         autoRefreshIntervalSpinner.setValue(prefManager.getInt(PreferencesManager.AUTO_REFRESH_INTERVAL, 2));
@@ -288,8 +276,7 @@ public class PreferencesDialog extends JDialog {
                 return;
             }
 
-            // Save all settings to PreferencesManager
-            prefManager.set(PreferencesManager.THEME, (String) themeCombo.getSelectedItem());
+            // Save all settings to PreferencesManager (no theme)
             prefManager.setBoolean(PreferencesManager.ENABLE_LOGGING, enableLoggingCheckBox.isSelected());
             prefManager.setBoolean(PreferencesManager.AUTO_REFRESH, autoRefreshCheckBox.isSelected());
             prefManager.setInt(PreferencesManager.AUTO_REFRESH_INTERVAL, (Integer) autoRefreshIntervalSpinner.getValue());
@@ -309,13 +296,15 @@ public class PreferencesDialog extends JDialog {
 
             // Save to file
             if (prefManager.savePreferences()) {
+                System.out.println("✓ Preferences saved to: " + prefManager.getPreferencesPath());
+
                 statusLabel.setText("✓ Settings saved successfully!");
                 statusLabel.setForeground(UITheme.SUCCESS_COLOR);
 
                 JOptionPane.showMessageDialog(this,
                     "✓ Preferences saved successfully!\n\n" +
                     "Location: " + prefManager.getPreferencesPath() + "\n\n" +
-                    "Some changes may require restarting the application.",
+                    "Note: Some settings will apply on next application restart.",
                     "Success",
                     JOptionPane.INFORMATION_MESSAGE);
 
@@ -323,15 +312,24 @@ public class PreferencesDialog extends JDialog {
             } else {
                 statusLabel.setText("✗ Failed to save settings");
                 statusLabel.setForeground(UITheme.ERROR_COLOR);
+
+                JOptionPane.showMessageDialog(this,
+                    "Failed to save preferences.\n\nPlease check file permissions.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
             }
 
         } catch (Exception e) {
             statusLabel.setText("✗ Error saving settings");
             statusLabel.setForeground(UITheme.ERROR_COLOR);
+
             JOptionPane.showMessageDialog(this,
                 "Error: " + e.getMessage(),
                 "Error",
                 JOptionPane.ERROR_MESSAGE);
+
+            System.err.println("Error saving preferences: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 

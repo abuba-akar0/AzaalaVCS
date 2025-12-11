@@ -15,6 +15,18 @@ import java.util.List;
 public class StagedFileDAO extends BaseDAO {
 
     public Long create(StagedFileEntity stagedFile) throws DatabaseException {
+        // First check if this file is already staged
+        try {
+            StagedFileEntity existing = findByRepoIdAndPath(stagedFile.getRepoId(), stagedFile.getFilePath());
+            if (existing != null) {
+                System.out.println("[DEBUG] File already staged in database: " + stagedFile.getFilePath());
+                return existing.getStagedFileId();
+            }
+        } catch (DatabaseException e) {
+            // Continue - if check fails, try to insert anyway
+            System.out.println("[DEBUG] Could not check for duplicate: " + e.getMessage());
+        }
+
         String sql = "INSERT INTO staged_files (repo_id, file_path, file_size, last_modified, status, created_at) VALUES (?, ?, ?, ?, ?, ?)";
         Connection conn = null;
         PreparedStatement stmt = null;
@@ -45,6 +57,21 @@ public class StagedFileDAO extends BaseDAO {
                 throw new DatabaseException("Failed to get generated staged file ID");
             }
         } catch (SQLException e) {
+            // Check if this is a duplicate key error
+            if (e.getErrorCode() == 1062 || e.getMessage().contains("Duplicate entry")) {
+                System.out.println("[DEBUG] File already staged (duplicate key): " + stagedFile.getFilePath());
+                // Try to find and return the existing record
+                try {
+                    StagedFileEntity existing = findByRepoIdAndPath(stagedFile.getRepoId(), stagedFile.getFilePath());
+                    if (existing != null) {
+                        return existing.getStagedFileId();
+                    }
+                } catch (Exception ex) {
+                    System.out.println("[DEBUG] Could not find duplicate record: " + ex.getMessage());
+                }
+                // Return a non-null value to indicate success (file was already there)
+                return 0L;
+            }
             handleSQLException("Error creating staged file", e);
         } finally {
             closeResources(rs, stmt, conn);

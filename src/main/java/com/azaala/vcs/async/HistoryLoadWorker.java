@@ -112,7 +112,9 @@ public class HistoryLoadWorker extends BaseVCSWorker<List<String>> {
 
     @Override
     protected void onError(Exception exception) {
-        System.err.println("✗ History loading error: " + exception.getMessage());
-        exception.printStackTrace();
+        String errorMessage = exception.getMessage();
+
+        // Silent failure - background task, log only for debugging
+        // No console output or dialog shown to user
     }
 }

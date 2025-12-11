@@ -376,6 +376,7 @@ public class Repository {
 
     /**
      * Adds a file to the staging area.
+     * Checks if file is already staged using normalized paths.
      *
      * @param filePath The path of the file to stage
      * @return true if successful, false otherwise
@@ -386,14 +387,15 @@ public class Repository {
         }
 
         try {
-            List<String> stagedFiles = getStagedFiles();
             String trimmedPath = filePath.trim();
 
-            // Don't add if already staged
-            if (stagedFiles.contains(trimmedPath)) {
+            // Check if already staged using normalized comparison
+            if (isFileStaged(trimmedPath)) {
+                System.out.println("File already staged: " + trimmedPath);
                 return true;
             }
 
+            List<String> stagedFiles = getStagedFiles();
             stagedFiles.add(trimmedPath);
             return saveStagedFiles(stagedFiles);
         } catch (Exception e) {
@@ -438,6 +440,7 @@ public class Repository {
 
     /**
      * Checks if a file is already staged.
+     * Uses normalized path comparison to handle different path formats.
      *
      * @param filePath The path of the file to check
      * @return true if file is already staged, false otherwise
@@ -449,11 +452,50 @@ public class Repository {
 
         try {
             List<String> stagedFiles = getStagedFiles();
-            String trimmedPath = filePath.trim();
-            return stagedFiles.contains(trimmedPath);
+            if (stagedFiles.isEmpty()) {
+                return false;
+            }
+
+            String normalizedPath = normalizePath(filePath.trim());
+            System.out.println("[DEBUG] Checking file: " + normalizedPath);
+
+            for (String staged : stagedFiles) {
+                String normalizedStaged = normalizePath(staged);
+                System.out.println("[DEBUG]   Against staged: " + normalizedStaged);
+
+                if (normalizedStaged.equals(normalizedPath)) {
+                    System.out.println("[DEBUG] ✓ MATCH FOUND - File already staged!");
+                    return true;
+                }
+            }
+            System.out.println("[DEBUG] ✗ No match - File is new");
+            return false;
         } catch (Exception e) {
             System.err.println("Error checking if file is staged: " + e.getMessage());
+            e.printStackTrace();
             return false;
+        }
+    }
+
+    /**
+     * Normalizes a file path for consistent comparison.
+     * Converts to absolute canonical path, lowercase, and uses forward slashes.
+     *
+     * @param filePath Path to normalize
+     * @return Normalized path (lowercase, forward slashes, canonical)
+     */
+    private String normalizePath(String filePath) {
+        try {
+            // Convert to absolute canonical path to resolve . and ..
+            java.io.File file = new java.io.File(filePath);
+            String normalized = file.getCanonicalPath();
+            // Use lowercase and forward slashes for consistent comparison
+            return normalized.toLowerCase().replace(java.io.File.separatorChar, '/');
+        } catch (java.io.IOException e) {
+            // Fallback: normalize without canonical path
+            String normalized = filePath.toLowerCase().replace(java.io.File.separatorChar, '/');
+            System.out.println("[DEBUG] Using fallback normalization for: " + normalized);
+            return normalized;
         }
     }
 

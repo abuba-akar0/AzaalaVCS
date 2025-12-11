@@ -129,8 +129,80 @@ public class DiffWorker extends BaseVCSWorker<List<String>> {
 
     @Override
     protected void onError(Exception exception) {
-        System.err.println("✗ Diff generation error: " + exception.getMessage());
-        exception.printStackTrace();
+        String errorMessage = exception.getMessage();
+
+        // Show ONLY user-friendly error dialog (no technical console output)
+        showErrorDialog(errorMessage);
+    }
+
+    /**
+     * Display user-friendly error dialog for diff generation
+     */
+    private void showErrorDialog(String errorMessage) {
+        try {
+            javax.swing.SwingUtilities.invokeLater(() -> {
+                String title = "Diff Generation Failed";
+                String userMessage = buildUserFriendlyMessage(errorMessage);
+
+                javax.swing.JOptionPane.showMessageDialog(
+                    null,
+                    userMessage,
+                    title,
+                    javax.swing.JOptionPane.WARNING_MESSAGE
+                );
+            });
+        } catch (Exception e) {
+            System.err.println("Could not display error dialog: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Build user-friendly message for diff generation errors
+     */
+    private String buildUserFriendlyMessage(String errorMessage) {
+        if (errorMessage == null) {
+            errorMessage = "Unknown error occurred";
+        }
+
+        String userMessage = "";
+
+        if (errorMessage.contains("File not found") || errorMessage.contains("does not exist")) {
+            userMessage = "⚠️ File Not Found\n\n" +
+                "The file has been deleted or moved.\n\n" +
+                "The diff cannot be generated for deleted files.\n\n" +
+                "What to do:\n" +
+                "• This is normal for deleted files\n" +
+                "• Select another file to view its diff";
+
+        } else if (errorMessage.contains("Cannot compare")) {
+            userMessage = "⚠️ Cannot Compare Files\n\n" +
+                "The files cannot be compared.\n\n" +
+                "Possible reasons:\n" +
+                "• Binary files cannot be diff'd\n" +
+                "• File format not supported\n" +
+                "• Files are identical\n\n" +
+                "Try selecting different files.";
+
+        } else if (errorMessage.contains("Permission denied")) {
+            userMessage = "⚠️ Permission Denied\n\n" +
+                "Cannot access the file to generate diff.\n\n" +
+                "How to fix:\n" +
+                "• Check file permissions\n" +
+                "• Close any applications using the file\n" +
+                "• Try again";
+
+        } else {
+            userMessage = "⚠️ Diff Generation Failed\n\n" +
+                "Could not generate the diff for this file.\n\n" +
+                "Error Details:\n" +
+                errorMessage + "\n\n" +
+                "What to try:\n" +
+                "• Select a different file\n" +
+                "• Check file permissions\n" +
+                "• Try again later";
+        }
+
+        return userMessage;
     }
 
     private String formatFileSize(long bytes) {
