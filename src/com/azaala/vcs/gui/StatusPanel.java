@@ -25,6 +25,11 @@ public class StatusPanel extends JPanel {
     private DefaultListModel<String> trackedModel;
     private DefaultListModel<String> modifiedModel;
 
+    // Count labels - store references to update dynamically
+    private JLabel stagedCountLabel;
+    private JLabel trackedCountLabel;
+    private JLabel modifiedCountLabel;
+
     public StatusPanel(VCS vcs, Repository repository) {
         this.vcs = vcs;
         this.repository = repository;
@@ -50,22 +55,22 @@ public class StatusPanel extends JPanel {
         stagedModel = new DefaultListModel<>();
         stagedList = new JList<>(stagedModel);
         UITheme.styleList(stagedList);
-        listsPanel.add(createListPanel("📌 Staged Files", stagedList, stagedModel));
+        listsPanel.add(createListPanel("📌 Staged Files", stagedList, stagedModel, (countLabel) -> stagedCountLabel = countLabel));
 
         trackedModel = new DefaultListModel<>();
         trackedList = new JList<>(trackedModel);
         UITheme.styleList(trackedList);
-        listsPanel.add(createListPanel("✓ Tracked Files", trackedList, trackedModel));
+        listsPanel.add(createListPanel("✓ Tracked Files", trackedList, trackedModel, (countLabel) -> trackedCountLabel = countLabel));
 
         modifiedModel = new DefaultListModel<>();
         modifiedList = new JList<>(modifiedModel);
         UITheme.styleList(modifiedList);
-        listsPanel.add(createListPanel("✎ Modified Files", modifiedList, modifiedModel));
+        listsPanel.add(createListPanel("✎ Modified Files", modifiedList, modifiedModel, (countLabel) -> modifiedCountLabel = countLabel));
 
         add(listsPanel, BorderLayout.CENTER);
     }
 
-    private JPanel createListPanel(String title, JList<String> list, DefaultListModel<String> model) {
+    private JPanel createListPanel(String title, JList<String> list, DefaultListModel<String> model, java.util.function.Consumer<JLabel> labelSetter) {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setBackground(UITheme.BACKGROUND_COLOR);
         panel.setBorder(UITheme.createStyledBorder(title));
@@ -74,12 +79,15 @@ public class StatusPanel extends JPanel {
         scrollPane.setBackground(UITheme.BACKGROUND_COLOR);
         panel.add(scrollPane, BorderLayout.CENTER);
 
-        // Add count label at bottom
+        // Create and store count label reference
         JLabel countLabel = new JLabel("Count: 0");
         UITheme.styleLabel(countLabel);
         countLabel.setBorder(BorderFactory.createEmptyBorder(UITheme.PADDING_SMALL, UITheme.PADDING_SMALL,
                                                              UITheme.PADDING_SMALL, UITheme.PADDING_SMALL));
         panel.add(countLabel, BorderLayout.SOUTH);
+
+        // Store label reference via consumer
+        labelSetter.accept(countLabel);
 
         return panel;
     }
@@ -98,6 +106,24 @@ public class StatusPanel extends JPanel {
             loadStagedFiles();
             loadTrackedFiles();
             loadModifiedFiles();
+        }
+
+        // Update count labels with actual counts
+        updateCountLabels();
+    }
+
+    /**
+     * Update count labels to display actual file counts
+     */
+    private void updateCountLabels() {
+        if (stagedCountLabel != null) {
+            stagedCountLabel.setText("Count: " + stagedModel.getSize());
+        }
+        if (trackedCountLabel != null) {
+            trackedCountLabel.setText("Count: " + trackedModel.getSize());
+        }
+        if (modifiedCountLabel != null) {
+            modifiedCountLabel.setText("Count: " + modifiedModel.getSize());
         }
     }
 
@@ -120,6 +146,11 @@ public class StatusPanel extends JPanel {
         } catch (IOException e) {
             System.err.println("Error loading staged files: " + e.getMessage());
         }
+
+        // Update count label
+        if (stagedCountLabel != null) {
+            stagedCountLabel.setText("Count: " + stagedModel.getSize());
+        }
     }
 
     /**
@@ -139,6 +170,11 @@ public class StatusPanel extends JPanel {
         trackedFiles.stream()
             .sorted()
             .forEach(trackedModel::addElement);
+
+        // Update count label
+        if (trackedCountLabel != null) {
+            trackedCountLabel.setText("Count: " + trackedModel.getSize());
+        }
     }
 
     /**
@@ -177,5 +213,10 @@ public class StatusPanel extends JPanel {
         modifiedFiles.stream()
             .sorted()
             .forEach(modifiedModel::addElement);
+
+        // Update count label
+        if (modifiedCountLabel != null) {
+            modifiedCountLabel.setText("Count: " + modifiedModel.getSize());
+        }
     }
 }

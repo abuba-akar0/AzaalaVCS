@@ -19,7 +19,7 @@ public class UITheme {
     // Text Colors - High Contrast
     public static final Color TEXT_PRIMARY = new Color(33, 47, 61);           // Very Dark Blue-Gray
     public static final Color TEXT_SECONDARY = new Color(89, 106, 122);       // Medium Blue-Gray
-    public static final Color TEXT_ON_PRIMARY = new Color(68, 42, 144);     // White
+    public static final Color TEXT_ON_PRIMARY = new Color(2, 0, 0);     // White
 
     // Status Colors - More Vibrant
     public static final Color SUCCESS_COLOR = new Color(46, 204, 113);        // Vibrant Green
@@ -272,6 +272,16 @@ public class UITheme {
         } catch (Exception e) {
             System.err.println("Error applying theme: " + e.getMessage());
         }
+    }
+
+    /**
+     * Applies theme to a checkbox
+     */
+    public static void styleCheckBox(javax.swing.JCheckBox checkBox) {
+        checkBox.setFont(CONTENT_FONT);
+        checkBox.setForeground(TEXT_PRIMARY);
+        checkBox.setBackground(BACKGROUND_COLOR);
+        checkBox.setFocusPainted(false);
     }
 }
 

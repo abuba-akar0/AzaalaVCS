@@ -5,6 +5,7 @@ import javax.swing.border.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.File;
+import java.util.List;
 import com.azaala.vcs.VCS;
 import com.azaala.vcs.Repository;
 
@@ -16,6 +17,7 @@ public class Dashboard extends JFrame {
 
     private VCS vcs;
     private Repository repository;
+    private RepositoryManager repoManager;
     private JTabbedPane tabbedPane;
     private JPanel mainPanel;
     private JLabel repositoryLabel;
@@ -38,6 +40,7 @@ public class Dashboard extends JFrame {
         UITheme.applyTheme();
 
         this.vcs = new VCS();
+        this.repoManager = new RepositoryManager();
         initializeFrame();
         buildMenuBar();
         buildToolBar();
@@ -50,7 +53,7 @@ public class Dashboard extends JFrame {
     private void initializeFrame() {
         setTitle("Azaala VCS - Dashboard");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1400, 900);
+        setSize(1366, 768);
         setLocationRelativeTo(null);
         setResizable(true);
 
@@ -243,16 +246,24 @@ public class Dashboard extends JFrame {
     }
 
     private void handleInitRepository() {
-        String path = JOptionPane.showInputDialog(
-            this,
-            "Enter repository path:",
-            System.getProperty("user.home")
-        );
+        // Use folder picker dialog
+        JFileChooser folderChooser = new JFileChooser();
+        folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        folderChooser.setDialogTitle("Select Folder to Initialize as Repository");
+        folderChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
 
-        if (path != null && !path.trim().isEmpty()) {
+        int result = folderChooser.showOpenDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            String path = folderChooser.getSelectedFile().getAbsolutePath();
+
             if (vcs.initRepository(path)) {
                 try {
                     repository = new Repository(path);
+                    vcs.setRepository(repository);
+
+                    // Save repository path for future quick access
+                    repoManager.addRepository(path);
 
                     // Update all panels with the new repository instance
                     overviewPanel.setRepository(repository);
@@ -263,12 +274,18 @@ public class Dashboard extends JFrame {
 
                     updateRepositoryLabel();
                     refreshAllTabs();
-                    JOptionPane.showMessageDialog(this, "Repository initialized successfully!");
+                    JOptionPane.showMessageDialog(this,
+                        "✓ Repository initialized successfully!\n\nPath: " + path,
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE);
                 } catch (Exception e) {
                     JOptionPane.showMessageDialog(this, "Error: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
                 }
             } else {
-                JOptionPane.showMessageDialog(this, "Failed to initialize repository", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this,
+                    "Failed to initialize repository at:\n" + path,
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE);
             }
         }
     }
@@ -324,38 +341,398 @@ public class Dashboard extends JFrame {
     }
 
     private void showNewRepositoryDialog() {
-        JOptionPane.showMessageDialog(this, "New Repository dialog - to be implemented");
+        // Step 1: Ask user where to create the repository
+        JFileChooser folderChooser = new JFileChooser();
+        folderChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        folderChooser.setDialogTitle("Select Location to Create New Repository");
+        folderChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
+        folderChooser.setAcceptAllFileFilterUsed(false);
+
+        int folderResult = folderChooser.showOpenDialog(this);
+
+        if (folderResult != JFileChooser.APPROVE_OPTION) {
+            // User cancelled folder selection
+            return;
+        }
+
+        String parentPath = folderChooser.getSelectedFile().getAbsolutePath();
+
+        // Step 2: Create a custom dialog for repository details
+        JDialog newRepoDialog = new JDialog(this, "Create New Repository", true);
+        newRepoDialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+        newRepoDialog.setSize(500, 350);
+        newRepoDialog.setLocationRelativeTo(this);
+        newRepoDialog.setResizable(false);
+
+        // Main panel with padding
+        JPanel mainPanel = new JPanel();
+        mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
+        mainPanel.setBackground(UITheme.BACKGROUND_COLOR);
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+
+        // Title
+        JLabel titleLabel = new JLabel("Create New Repository");
+        titleLabel.setFont(UITheme.SUBTITLE_FONT);
+        titleLabel.setForeground(UITheme.TEXT_PRIMARY);
+        mainPanel.add(titleLabel);
+        mainPanel.add(Box.createVerticalStrut(15));
+
+        // Parent path display
+        JLabel parentPathLabel = new JLabel("Location:");
+        parentPathLabel.setFont(UITheme.LABEL_FONT);
+        mainPanel.add(parentPathLabel);
+
+        JLabel parentPathValueLabel = new JLabel(parentPath);
+        parentPathValueLabel.setFont(UITheme.CONTENT_FONT);
+        parentPathValueLabel.setForeground(UITheme.TEXT_SECONDARY);
+        mainPanel.add(parentPathValueLabel);
+        mainPanel.add(Box.createVerticalStrut(10));
+
+        // Repository name
+        JLabel nameLabel = new JLabel("Repository Name:");
+        nameLabel.setFont(UITheme.LABEL_FONT);
+        mainPanel.add(nameLabel);
+
+        JTextField nameField = new JTextField();
+        nameField.setFont(UITheme.CONTENT_FONT);
+        nameField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 35));
+        nameField.setPreferredSize(new Dimension(400, 35));
+        UITheme.styleTextField(nameField);
+        mainPanel.add(nameField);
+        mainPanel.add(Box.createVerticalStrut(15));
+
+        // Repository description (optional)
+        JLabel descLabel = new JLabel("Description (Optional):");
+        descLabel.setFont(UITheme.LABEL_FONT);
+        mainPanel.add(descLabel);
+
+        JTextArea descArea = new JTextArea(3, 40);
+        descArea.setFont(UITheme.CONTENT_FONT);
+        descArea.setLineWrap(true);
+        descArea.setWrapStyleWord(true);
+        UITheme.styleTextArea(descArea);
+        JScrollPane descScroll = new JScrollPane(descArea);
+        mainPanel.add(descScroll);
+        mainPanel.add(Box.createVerticalStrut(15));
+
+        // Options panel
+        JPanel optionsPanel = new JPanel();
+        optionsPanel.setLayout(new BoxLayout(optionsPanel, BoxLayout.Y_AXIS));
+        optionsPanel.setBackground(UITheme.BACKGROUND_COLOR);
+
+        JCheckBox createGitIgnoreCheckBox = new JCheckBox("Create .gitignore file");
+        createGitIgnoreCheckBox.setSelected(true);
+        createGitIgnoreCheckBox.setBackground(UITheme.BACKGROUND_COLOR);
+        UITheme.styleCheckBox(createGitIgnoreCheckBox);
+        optionsPanel.add(createGitIgnoreCheckBox);
+
+        JCheckBox createReadmeCheckBox = new JCheckBox("Create README.md file");
+        createReadmeCheckBox.setSelected(true);
+        createReadmeCheckBox.setBackground(UITheme.BACKGROUND_COLOR);
+        UITheme.styleCheckBox(createReadmeCheckBox);
+        optionsPanel.add(createReadmeCheckBox);
+
+        mainPanel.add(optionsPanel);
+        mainPanel.add(Box.createVerticalStrut(20));
+
+        // Button panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
+        buttonPanel.setBackground(UITheme.BACKGROUND_COLOR);
+
+        JButton cancelBtn = new JButton("Cancel");
+        cancelBtn.setPreferredSize(new Dimension(100, 35));
+        cancelBtn.addActionListener(e -> newRepoDialog.dispose());
+        UITheme.stylePrimaryButton(cancelBtn);
+        buttonPanel.add(cancelBtn);
+
+        JButton createBtn = new JButton("Create Repository");
+        createBtn.setPreferredSize(new Dimension(150, 35));
+        createBtn.addActionListener(e -> {
+            String repoName = nameField.getText().trim();
+            String description = descArea.getText().trim();
+            boolean createGitIgnore = createGitIgnoreCheckBox.isSelected();
+            boolean createReadme = createReadmeCheckBox.isSelected();
+
+            newRepoDialog.dispose();
+            createNewRepository(parentPath, repoName, description, createGitIgnore, createReadme);
+        });
+        UITheme.styleSuccessButton(createBtn);
+        buttonPanel.add(createBtn);
+
+        mainPanel.add(buttonPanel);
+
+        newRepoDialog.add(mainPanel);
+        newRepoDialog.setVisible(true);
+    }
+
+    /**
+     * Create a new repository with specified parameters
+     */
+    private void createNewRepository(String parentPath, String repoName, String description,
+                                    boolean createGitIgnore, boolean createReadme) {
+        // Validate repository name
+        if (repoName == null || repoName.isEmpty()) {
+            JOptionPane.showMessageDialog(this,
+                "Repository name cannot be empty.\n\nPlease enter a valid repository name.",
+                "Invalid Name",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Validate repository name (no special characters)
+        if (!repoName.matches("^[a-zA-Z0-9_-]+$")) {
+            JOptionPane.showMessageDialog(this,
+                "Repository name can only contain letters, numbers, hyphens, and underscores.\n\n" +
+                "Invalid characters detected.",
+                "Invalid Characters",
+                JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Create full path
+        String fullPath = parentPath + File.separator + repoName;
+        File repoDir = new File(fullPath);
+
+        // Check if directory already exists
+        if (repoDir.exists()) {
+            int option = JOptionPane.showConfirmDialog(this,
+                "A folder named '" + repoName + "' already exists.\n\n" +
+                "Would you like to initialize it as a repository anyway?",
+                "Directory Exists",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE);
+
+            if (option != JOptionPane.YES_OPTION) {
+                return;
+            }
+        }
+
+        try {
+            // Initialize repository using VCS
+            if (!vcs.initRepository(fullPath)) {
+                JOptionPane.showMessageDialog(this,
+                    "Failed to initialize repository.\n\n" +
+                    "Please check:\n" +
+                    "- The path is writable\n" +
+                    "- You have permission to create directories\n" +
+                    "- Sufficient disk space available",
+                    "Initialization Failed",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Create optional files
+            if (createGitIgnore) {
+                createGitIgnoreFile(fullPath);
+            }
+
+            if (createReadme) {
+                createReadmeFile(fullPath, repoName, description);
+            }
+
+            // Load the newly created repository
+            loadRepository(fullPath);
+
+            // Show success message
+            JOptionPane.showMessageDialog(this,
+                "✓ New repository created successfully!\n\n" +
+                "Repository Name: " + repoName + "\n" +
+                "Path: " + fullPath + "\n\n" +
+                "Repository is now ready to use.\n" +
+                "You can start adding files and creating commits.",
+                "Repository Created",
+                JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                "Error creating repository:\n" + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Create .gitignore file with common patterns
+     */
+    private void createGitIgnoreFile(String repoPath) {
+        try {
+            String gitIgnoreContent = "# Java\n" +
+                "*.class\n" +
+                "*.jar\n" +
+                "*.war\n" +
+                "bin/\n" +
+                "target/\n" +
+                ".classpath\n" +
+                ".project\n" +
+                "\n" +
+                "# IDE\n" +
+                ".vscode/\n" +
+                ".idea/\n" +
+                "*.iml\n" +
+                "*.swp\n" +
+                "*.swo\n" +
+                "\n" +
+                "# OS\n" +
+                ".DS_Store\n" +
+                "Thumbs.db\n" +
+                "\n" +
+                "# Logs\n" +
+                "*.log\n" +
+                "logs/\n";
+
+            File gitIgnoreFile = new File(repoPath, ".gitignore");
+            java.nio.file.Files.write(gitIgnoreFile.toPath(), gitIgnoreContent.getBytes());
+        } catch (Exception e) {
+            System.err.println("Warning: Could not create .gitignore file: " + e.getMessage());
+        }
+    }
+
+    /**
+     * Create README.md file with repository information
+     */
+    private void createReadmeFile(String repoPath, String repoName, String description) {
+        try {
+            String readmeContent = "# " + repoName + "\n\n" +
+                (description != null && !description.isEmpty() ? description + "\n\n" : "") +
+                "## Getting Started\n\n" +
+                "This is a version control repository managed by Azaala VCS.\n\n" +
+                "### Basic Commands\n\n" +
+                "1. **Add Files**\n" +
+                "   - Use the \"Add File\" button to stage files for commit\n\n" +
+                "2. **Create Commits**\n" +
+                "   - Use the \"Commit\" button to save staged changes\n\n" +
+                "3. **View History**\n" +
+                "   - Use the \"Commit History\" tab to see all commits\n\n" +
+                "4. **Compare Changes**\n" +
+                "   - Use the \"Diff Viewer\" tab to compare commits\n\n" +
+                "## Repository Structure\n\n" +
+                "```\n" +
+                repoName + "/\n" +
+                "├── data/\n" +
+                "│   ├── commits/       (Commit snapshots)\n" +
+                "│   ├── index/         (Staging area)\n" +
+                "│   └── commits.log    (Commit history)\n" +
+                "├── .gitignore         (Files to ignore)\n" +
+                "├── README.md          (This file)\n" +
+                "└── [your files]\n" +
+                "```\n\n" +
+                "## Tips\n\n" +
+                "- Create commits frequently with meaningful messages\n" +
+                "- Use the diff viewer to review changes before committing\n" +
+                "- Check file status to understand what's staged and what's not\n\n" +
+                "---\n" +
+                "Created with Azaala VCS v1.0.0\n";
+
+            File readmeFile = new File(repoPath, "README.md");
+            java.nio.file.Files.write(readmeFile.toPath(), readmeContent.getBytes());
+        } catch (Exception e) {
+            System.err.println("Warning: Could not create README.md file: " + e.getMessage());
+        }
     }
 
     private void showOpenRepositoryDialog() {
-        JFileChooser dirChooser = new JFileChooser();
-        dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        List<String> savedRepos = repoManager.getRepositories();
 
-        int result = dirChooser.showOpenDialog(this);
-        if (result == JFileChooser.APPROVE_OPTION) {
-            String path = dirChooser.getSelectedFile().getAbsolutePath();
-            try {
-                repository = new Repository(path);
+        if (savedRepos.isEmpty()) {
+            // No saved repos, ask user to browse
+            int option = JOptionPane.showConfirmDialog(
+                this,
+                "No saved repositories found.\n\nWould you like to browse for a repository?",
+                "Open Repository",
+                JOptionPane.YES_NO_OPTION
+            );
 
-                // Update all panels with the loaded repository instance
-                overviewPanel.setRepository(repository);
-                historyPanel.setRepository(repository);
-                statusPanel.setRepository(repository);
-                diffPanel.setRepository(repository);
-                settingsPanel.setRepository(repository);
+            if (option == JOptionPane.YES_OPTION) {
+                browseForRepository();
+            }
+            return;
+        }
 
-                updateRepositoryLabel();
-                refreshAllTabs();
-                JOptionPane.showMessageDialog(this, "Repository loaded successfully!");
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Failed to load repository: " + e.getMessage(),
-                    "Error", JOptionPane.ERROR_MESSAGE);
+        // Create a dialog to select from saved repositories
+        String[] repoArray = savedRepos.toArray(new String[0]);
+        String selectedRepo = (String) JOptionPane.showInputDialog(
+            this,
+            "Select a repository to open:",
+            "Open Repository",
+            JOptionPane.PLAIN_MESSAGE,
+            null,
+            repoArray,
+            repoArray[0]
+        );
+
+        if (selectedRepo != null) {
+            File repoDir = new File(selectedRepo);
+            if (repoDir.exists() && repoDir.isDirectory()) {
+                loadRepository(selectedRepo);
+            } else {
+                // Repository path no longer exists
+                int option = JOptionPane.showConfirmDialog(
+                    this,
+                    "The repository path no longer exists:\n" + selectedRepo + "\n\n" +
+                    "Would you like to remove it from the list and browse for another?",
+                    "Repository Not Found",
+                    JOptionPane.YES_NO_OPTION
+                );
+
+                if (option == JOptionPane.YES_OPTION) {
+                    repoManager.removeRepository(selectedRepo);
+                    browseForRepository();
+                }
             }
         }
     }
 
+    /**
+     * Browse for a repository folder
+     */
+    private void browseForRepository() {
+        JFileChooser dirChooser = new JFileChooser();
+        dirChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        dirChooser.setDialogTitle("Select Repository Folder");
+
+        int result = dirChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            String path = dirChooser.getSelectedFile().getAbsolutePath();
+            loadRepository(path);
+        }
+    }
+
+    /**
+     * Load a repository at the given path
+     */
+    private void loadRepository(String path) {
+        try {
+            repository = new Repository(path);
+            vcs.setRepository(repository);
+
+            // Save to quick access list
+            repoManager.addRepository(path);
+
+            // Update all panels with the loaded repository instance
+            overviewPanel.setRepository(repository);
+            historyPanel.setRepository(repository);
+            statusPanel.setRepository(repository);
+            diffPanel.setRepository(repository);
+            settingsPanel.setRepository(repository);
+
+            updateRepositoryLabel();
+            refreshAllTabs();
+            JOptionPane.showMessageDialog(this,
+                "✓ Repository loaded successfully!\n\nPath: " + path,
+                "Success",
+                JOptionPane.INFORMATION_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this,
+                "Failed to load repository:\n" + e.getMessage(),
+                "Error",
+                JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     private void showPreferencesDialog() {
-        JOptionPane.showMessageDialog(this, "Preferences dialog - to be implemented");
+        // Launch the professional preferences dialog
+        new PreferencesDialog(this);
     }
 
     private void showAboutDialog() {

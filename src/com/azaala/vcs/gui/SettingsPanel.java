@@ -132,20 +132,40 @@ public class SettingsPanel extends JPanel {
             settings.setProperty("max.file.size", txtMaxFileSize.getText());
             settings.setProperty("auto.refresh", String.valueOf(chkAutoRefresh.isSelected()));
 
-            // Save to file
+            // Determine settings path
             String repoPath = repository != null ? repository.getPath() : System.getProperty("user.home");
             Path settingsPath = Paths.get(repoPath, SETTINGS_FILE);
+            File settingsFile = settingsPath.toFile();
+            File parentDir = settingsFile.getParentFile();
 
-            try (FileWriter writer = new FileWriter(settingsPath.toFile())) {
+            // Ensure parent directory exists and is writable
+            if (!parentDir.exists()) {
+                if (!parentDir.mkdirs()) {
+                    statusLabel.setText("✗ Cannot create settings directory");
+                    statusLabel.setForeground(UITheme.ERROR_COLOR);
+                    return;
+                }
+            }
+
+            // Check write permission
+            if (!parentDir.canWrite()) {
+                statusLabel.setText("✗ Settings directory is not writable");
+                statusLabel.setForeground(UITheme.ERROR_COLOR);
+                return;
+            }
+
+            // Save to file
+            try (FileWriter writer = new FileWriter(settingsFile)) {
                 settings.store(writer, "Azaala VCS Settings");
             }
 
-            statusLabel.setText("✓ Settings saved successfully");
+            statusLabel.setText("✓ Settings saved successfully at: " + settingsPath);
             statusLabel.setForeground(UITheme.SUCCESS_COLOR);
 
         } catch (IOException e) {
             statusLabel.setText("✗ Error saving settings: " + e.getMessage());
             statusLabel.setForeground(UITheme.ERROR_COLOR);
+            System.err.println("Error saving settings: " + e.getMessage());
         }
     }
 
@@ -185,16 +205,23 @@ public class SettingsPanel extends JPanel {
             if (Files.exists(settingsPath)) {
                 try (FileReader reader = new FileReader(settingsPath.toFile())) {
                     settings.load(reader);
+                    System.out.println("Settings loaded from: " + settingsPath);
                 }
+            } else {
+                // Settings file doesn't exist yet - use defaults
+                System.out.println("Settings file not found at: " + settingsPath + " (using defaults)");
             }
 
-            // Apply loaded settings to UI
+            // Apply loaded settings to UI (with defaults if not found)
             txtDefaultCommitMsg.setText(settings.getProperty("default.commit.message", ""));
             txtMaxFileSize.setText(settings.getProperty("max.file.size", "100"));
             chkAutoRefresh.setSelected(Boolean.parseBoolean(settings.getProperty("auto.refresh", "true")));
 
         } catch (IOException e) {
             System.err.println("Error loading settings: " + e.getMessage());
+            // Continue with default values - don't crash
+            txtMaxFileSize.setText("100");
+            chkAutoRefresh.setSelected(true);
         }
     }
 }
